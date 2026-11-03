@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cadence</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div id="app">
+      <header class="top">
+        <div>
+          <div class="brand">Cadence</div>
+          <div class="sub" id="api-line">API …</div>
+        </div>
+        <div class="tabs">
+          <button class="tab active" data-tab="jobs">Jobs</button>
+          <button class="tab" data-tab="history">History</button>
+          <button class="tab" data-tab="new">New</button>
+        </div>
+      </header>
+
+      <main>
+        <section id="view-jobs" class="view active"></section>
+        <section id="view-history" class="view"></section>
+        <section id="view-new" class="view">
+          <form id="job-form" class="form">
+            <label>
+              Name
+              <input id="f-name" name="name" required placeholder="Nightly backup" />
+            </label>
+            <label>
+              Command
+              <textarea
+                id="f-command"
+                name="command"
+                required
+                rows="3"
+                placeholder="echo hello"
+              ></textarea>
+            </label>
+            <label>
+              Working directory (optional)
+              <input id="f-cwd" name="cwd" placeholder="leave blank for home" />
+            </label>
+            <label>
+              Times (HH:MM, comma-separated)
+              <input id="f-times" name="times" required placeholder="09:00, 17:30" />
+            </label>
+            <fieldset class="days">
+              <legend>Days</legend>
+              <label><input type="checkbox" value="1" checked /> Mon</label>
+              <label><input type="checkbox" value="2" checked /> Tue</label>
+              <label><input type="checkbox" value="3" checked /> Wed</label>
+              <label><input type="checkbox" value="4" checked /> Thu</label>
+              <label><input type="checkbox" value="5" checked /> Fri</label>
+              <label><input type="checkbox" value="6" /> Sat</label>
+              <label><input type="checkbox" value="0" /> Sun</label>
+            </fieldset>
+            <label class="row">
+              <input type="checkbox" id="f-enabled" checked />
+              Enabled
+            </label>
+            <div class="actions">
+              <button type="submit" class="primary">Save job</button>
+            </div>
+            <p class="hint" id="form-hint"></p>
+          </form>
+        </section>
+      </main>
+    </div>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>
