@@ -1,10 +1,18 @@
 export type Weekday = 0 | 1 | 2 | 3 | 4 | 5 | 6; // Sunday = 0
 
 export interface JobSchedule {
-  /** Local wall-clock HH:MM (24h). */
+  /**
+   * Local wall-clock HH:MM (24h). Used when `intervalMinutes` is unset.
+   * May be empty when the job is interval-based.
+   */
   times: string[];
-  /** Days of week; empty means every day. */
+  /** Days of week; empty means every day. Ignored for interval jobs. */
   days: Weekday[];
+  /**
+   * When set, run every N minutes instead of at wall-clock `times`.
+   * Mirrors launchd `StartInterval` (seconds → minutes here).
+   */
+  intervalMinutes?: number;
   timezone?: string;
 }
 

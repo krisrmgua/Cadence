@@ -3,6 +3,7 @@ type Weekday = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 interface JobSchedule {
   times: string[];
   days: Weekday[];
+  intervalMinutes?: number;
 }
 
 interface Job {
@@ -86,6 +87,9 @@ form.addEventListener("submit", async (e) => {
   const cwd = (document.getElementById("f-cwd") as HTMLInputElement).value;
   const timesRaw = (document.getElementById("f-times") as HTMLInputElement)
     .value;
+  const intervalRaw = (
+    document.getElementById("f-interval") as HTMLInputElement
+  ).value.trim();
   const enabled = (document.getElementById("f-enabled") as HTMLInputElement)
     .checked;
   const times = timesRaw
@@ -95,6 +99,11 @@ form.addEventListener("submit", async (e) => {
   const days = [
     ...document.querySelectorAll<HTMLInputElement>(".days input:checked"),
   ].map((el) => Number(el.value) as Weekday);
+  const intervalMinutes = intervalRaw ? Number(intervalRaw) : undefined;
+  if (intervalMinutes == null && times.length === 0) {
+    formHint.textContent = "Set times or an interval.";
+    return;
+  }
 
   try {
     await window.cadence.createJob({
@@ -102,7 +111,11 @@ form.addEventListener("submit", async (e) => {
       command,
       cwd: cwd || undefined,
       enabled,
-      schedule: { times, days },
+      schedule: {
+        times,
+        days,
+        ...(intervalMinutes != null ? { intervalMinutes } : {}),
+      },
     });
     form.reset();
     (document.getElementById("f-enabled") as HTMLInputElement).checked = true;
@@ -120,6 +133,9 @@ form.addEventListener("submit", async (e) => {
 });
 
 function scheduleLabel(job: Job): string {
+  if (job.schedule.intervalMinutes != null) {
+    return `every ${job.schedule.intervalMinutes} min`;
+  }
   const days =
     job.schedule.days.length === 0
       ? "every day"
