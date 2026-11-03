@@ -58,6 +58,8 @@ declare global {
 const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 let state: State = { jobs: [], runs: [], apiPort: 0, platform: "" };
+/** Job ids the user has expanded; cards start collapsed. */
+const expandedJobs = new Set<string>();
 
 const jobsView = document.getElementById("view-jobs")!;
 const historyView = document.getElementById("view-history")!;
@@ -148,35 +150,53 @@ function renderJobs(): void {
     jobsView.innerHTML = `<div class="empty">No jobs yet. Use New, or POST to the local API.</div>`;
     return;
   }
+  // Drop expansion for jobs that no longer exist.
+  for (const id of [...expandedJobs]) {
+    if (!state.jobs.some((j) => j.id === id)) expandedJobs.delete(id);
+  }
+
   jobsView.innerHTML = state.jobs
     .map((job) => {
       const status = job.lastStatus
         ? `<span class="badge ${job.lastStatus}">${job.lastStatus}</span>`
         : `<span class="badge">${job.enabled ? "armed" : "paused"}</span>`;
-      return `<article class="card" data-id="${job.id}">
-        <div class="card-head">
-          <h3>${escapeHtml(job.name)}</h3>
+      const open = expandedJobs.has(job.id);
+      const sched = escapeHtml(scheduleLabel(job));
+      return `<article class="card job-card${open ? " open" : " collapsed"}" data-id="${job.id}">
+        <button type="button" class="card-head job-toggle" aria-expanded="${open ? "true" : "false"}">
+          <span class="chev" aria-hidden="true"></span>
+          <span class="job-head-main">
+            <span class="job-title">${escapeHtml(job.name)}</span>
+            <span class="job-sched">${sched}</span>
+          </span>
           ${status}
-        </div>
-        <div class="meta">
-          <div class="mono">${escapeHtml(job.command)}</div>
-          <div>${escapeHtml(scheduleLabel(job))}</div>
-          <div>${job.cwd ? escapeHtml(job.cwd) : "cwd: home"} · via ${job.createdBy}</div>
-        </div>
-        <div class="row-actions">
-          <button class="ghost" data-act="toggle">${job.enabled ? "Disable" : "Enable"}</button>
-          <button class="primary" data-act="run">Run now</button>
-          <button class="danger" data-act="delete">Delete</button>
+        </button>
+        <div class="job-body">
+          <div class="meta">
+            <div class="mono">${escapeHtml(job.command)}</div>
+            <div>${job.cwd ? escapeHtml(job.cwd) : "cwd: home"} · via ${job.createdBy}</div>
+          </div>
+          <div class="row-actions">
+            <button class="ghost" data-act="toggle">${job.enabled ? "Disable" : "Enable"}</button>
+            <button class="primary" data-act="run">Run now</button>
+            <button class="danger" data-act="delete">Delete</button>
+          </div>
         </div>
       </article>`;
     })
     .join("");
 
-  jobsView.querySelectorAll<HTMLElement>(".card").forEach((card) => {
+  jobsView.querySelectorAll<HTMLElement>(".job-card").forEach((card) => {
     const id = card.dataset.id!;
     const job = state.jobs.find((j) => j.id === id);
-    card.querySelectorAll("button").forEach((btn) => {
-      btn.addEventListener("click", async () => {
+    card.querySelector(".job-toggle")?.addEventListener("click", () => {
+      if (expandedJobs.has(id)) expandedJobs.delete(id);
+      else expandedJobs.add(id);
+      renderJobs();
+    });
+    card.querySelectorAll<HTMLButtonElement>(".row-actions button").forEach((btn) => {
+      btn.addEventListener("click", async (e) => {
+        e.stopPropagation();
         if (!job) return;
         const act = btn.getAttribute("data-act");
         if (act === "run") {

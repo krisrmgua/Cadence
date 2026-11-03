@@ -113,12 +113,92 @@ main {
   font-weight: 600;
 }
 
+.job-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.job-toggle {
+  appearance: none;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+}
+
+.job-toggle:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.job-head-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 10px;
+}
+
+.job-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.job-sched {
+  color: var(--muted);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.chev {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 auto;
+  border-right: 1.5px solid var(--muted);
+  border-bottom: 1.5px solid var(--muted);
+  transform: rotate(-45deg);
+  transition: transform 0.15s ease;
+  margin: 0 2px 0 2px;
+}
+
+.job-card.open .chev {
+  transform: rotate(45deg);
+  margin-top: -2px;
+}
+
+.job-body {
+  display: none;
+  padding: 0 12px 12px;
+  border-top: 1px solid var(--border);
+}
+
+.job-card.open .job-body {
+  display: block;
+}
+
+.job-card.collapsed .job-body {
+  display: none;
+}
+
 .meta {
   color: var(--muted);
   font-size: 12px;
   margin-top: 6px;
   line-height: 1.45;
   word-break: break-word;
+}
+
+.job-body .meta {
+  margin-top: 10px;
 }
 
 .badge {
