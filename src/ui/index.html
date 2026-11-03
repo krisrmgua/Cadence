@@ -48,8 +48,12 @@
               <input id="f-cwd" name="cwd" placeholder="leave blank for home" />
             </label>
             <label>
-              Times (HH:MM, comma-separated)
-              <input id="f-times" name="times" required placeholder="09:00, 17:30" />
+              Times (HH:MM, comma-separated) — leave blank if using interval
+              <input id="f-times" name="times" placeholder="09:00, 17:30" />
+            </label>
+            <label>
+              Interval minutes (optional; overrides times)
+              <input id="f-interval" name="interval" type="number" min="1" step="1" placeholder="e.g. 5" />
             </label>
             <fieldset class="days">
               <legend>Days</legend>

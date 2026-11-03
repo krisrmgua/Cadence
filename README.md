@@ -245,9 +245,10 @@ On a job card:
 ### Schedule rules
 
 - Times are **local machine time**, format `HH:MM` (24-hour), e.g. `09:00`, `17:30`.
-- The scheduler checks about every **15 seconds**. A job fires **once per matching minute** on a matching day (not repeatedly every 15s inside that minute).
-- **Days** use JavaScript weekday numbers when set via API: `0` = Sunday … `6` = Saturday.
-- Empty `days` array (`[]`) means **every day**.
+- Or set **`intervalMinutes`** (API / New form) to run every N minutes instead of wall-clock times (launchd `StartInterval` style).
+- The scheduler checks about every **15 seconds**. Calendar jobs fire **once per matching minute**; interval jobs fire when N minutes have elapsed since the last run.
+- **Days** use JavaScript weekday numbers when set via API: `0` = Sunday … `6` = Saturday. Days are ignored for interval jobs.
+- Empty `days` array (`[]`) means **every day** for calendar jobs.
 - Cadence must be **running** (tray process alive) for scheduled jobs to fire. It is not a separate OS cron/Task Scheduler entry (yet).
 
 ### Example commands
@@ -336,8 +337,9 @@ curl -s http://127.0.0.1:3927/jobs \
 |---|---|---|
 | `name` | yes | Non-empty string |
 | `command` | yes | Shell / cmd line |
-| `schedule.times` | yes | Non-empty array of `HH:MM` |
-| `schedule.days` | no | Array of `0`–`6`; omit or `[]` = every day |
+| `schedule.times` | yes* | Array of `HH:MM`. Required unless `intervalMinutes` is set |
+| `schedule.days` | no | Array of `0`–`6`; omit or `[]` = every day (calendar jobs) |
+| `schedule.intervalMinutes` | no | Integer ≥ 1; when set, runs every N minutes instead of `times` |
 | `cwd` | no | Working directory; default home |
 | `enabled` | no | Default `true` |
 

@@ -2,10 +2,12 @@ import type { Job, Weekday } from "./types";
 import type { Store } from "./store";
 import type { Runner } from "./runner";
 
-/** Track fired slots as `jobId|YYYY-MM-DD|HH:MM` so each slot runs once. */
+/** Track fired calendar slots as `jobId|YYYY-MM-DD|HH:MM`. */
 export class Scheduler {
   private timer: NodeJS.Timeout | null = null;
   private fired = new Set<string>();
+  /** Last interval fire epoch ms per job id. */
+  private lastIntervalFire = new Map<string, number>();
 
   constructor(
     private store: Store,
@@ -24,12 +26,20 @@ export class Scheduler {
 
   private tick(): void {
     const now = new Date();
+    const nowMs = now.getTime();
     const hhmm = formatHHMM(now);
     const day = now.getDay() as Weekday;
     const dateKey = formatDate(now);
 
     for (const job of this.store.listJobs()) {
       if (!job.enabled) continue;
+
+      const interval = job.schedule.intervalMinutes;
+      if (interval != null && interval > 0) {
+        this.tickInterval(job, nowMs, interval);
+        continue;
+      }
+
       if (!isDueToday(job, day)) continue;
       if (!job.schedule.times.includes(hhmm)) continue;
 
@@ -40,6 +50,19 @@ export class Scheduler {
     }
 
     this.pruneFired(dateKey);
+  }
+
+  private tickInterval(job: Job, nowMs: number, intervalMinutes: number): void {
+    const gapMs = intervalMinutes * 60_000;
+    let last = this.lastIntervalFire.get(job.id);
+    if (last === undefined) {
+      last = job.lastRunAt ? Date.parse(job.lastRunAt) : 0;
+      if (Number.isNaN(last)) last = 0;
+      this.lastIntervalFire.set(job.id, last);
+    }
+    if (nowMs - last < gapMs) return;
+    this.lastIntervalFire.set(job.id, nowMs);
+    void this.runner.run(job.id, "schedule");
   }
 
   private pruneFired(today: string): void {

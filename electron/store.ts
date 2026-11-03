@@ -6,6 +6,7 @@ import type {
   CreateJobInput,
   Job,
   JobRun,
+  JobSchedule,
   UpdateJobInput,
 } from "./types";
 
@@ -91,11 +92,7 @@ export class Store {
       command: input.command,
       cwd: input.cwd?.trim() || undefined,
       enabled: input.enabled !== false,
-      schedule: {
-        times: [...input.schedule.times],
-        days: [...input.schedule.days],
-        timezone: input.schedule.timezone,
-      },
+      schedule: cloneSchedule(input.schedule),
       createdAt: now,
       updatedAt: now,
       createdBy: input.createdBy ?? "ui",
@@ -116,11 +113,7 @@ export class Store {
     }
     if (input.enabled !== undefined) job.enabled = input.enabled;
     if (input.schedule !== undefined) {
-      job.schedule = {
-        times: [...input.schedule.times],
-        days: [...input.schedule.days],
-        timezone: input.schedule.timezone,
-      };
+      job.schedule = cloneSchedule(input.schedule);
     }
     job.updatedAt = new Date().toISOString();
     this.persist();
@@ -213,4 +206,16 @@ export class Store {
 function truncate(text: string, max = 200_000): string {
   if (text.length <= max) return text;
   return `${text.slice(0, max)}\n…[truncated]`;
+}
+
+function cloneSchedule(schedule: JobSchedule): JobSchedule {
+  const out: JobSchedule = {
+    times: [...schedule.times],
+    days: [...schedule.days],
+    timezone: schedule.timezone,
+  };
+  if (schedule.intervalMinutes != null) {
+    out.intervalMinutes = schedule.intervalMinutes;
+  }
+  return out;
 }

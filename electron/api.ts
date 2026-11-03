@@ -165,18 +165,15 @@ function parseCreateJob(
   if (!scheduleRaw || typeof scheduleRaw !== "object") {
     return { error: "schedule required" };
   }
-  const schedule = scheduleRaw as Record<string, unknown>;
-  const times = normalizeTimes(schedule.times);
-  if ("error" in times) return times;
-  const days = normalizeDays(schedule.days);
-  if ("error" in days) return days;
+  const parsed = parseSchedule(scheduleRaw as Record<string, unknown>);
+  if ("error" in parsed) return parsed;
 
   return {
     name,
     command,
     cwd: o.cwd != null ? String(o.cwd) : undefined,
     enabled: o.enabled !== false,
-    schedule: { times: times.times, days: days.days },
+    schedule: parsed,
   };
 }
 
@@ -196,20 +193,55 @@ function parseUpdateJob(
     if (!o.schedule || typeof o.schedule !== "object") {
       return { error: "invalid schedule" };
     }
-    const schedule = o.schedule as Record<string, unknown>;
-    const times = normalizeTimes(schedule.times);
-    if ("error" in times) return times;
-    const days = normalizeDays(schedule.days);
-    if ("error" in days) return days;
-    out.schedule = { times: times.times, days: days.days };
+    const parsed = parseSchedule(o.schedule as Record<string, unknown>);
+    if ("error" in parsed) return parsed;
+    out.schedule = parsed;
   }
   return out;
 }
 
+function parseSchedule(
+  schedule: Record<string, unknown>,
+): import("./types").JobSchedule | { error: string } {
+  const intervalRaw = schedule.intervalMinutes;
+  let intervalMinutes: number | undefined;
+  if (intervalRaw !== undefined && intervalRaw !== null) {
+    const n = Number(intervalRaw);
+    if (!Number.isInteger(n) || n < 1) {
+      return { error: "schedule.intervalMinutes must be an integer >= 1" };
+    }
+    intervalMinutes = n;
+  }
+
+  const days = normalizeDays(schedule.days);
+  if ("error" in days) return days;
+
+  if (intervalMinutes != null) {
+    const times =
+      schedule.times === undefined || schedule.times === null
+        ? { times: [] as string[] }
+        : normalizeTimes(schedule.times, { allowEmpty: true });
+    if ("error" in times) return times;
+    return {
+      times: times.times,
+      days: days.days,
+      intervalMinutes,
+    };
+  }
+
+  const times = normalizeTimes(schedule.times, { allowEmpty: false });
+  if ("error" in times) return times;
+  return { times: times.times, days: days.days };
+}
+
 function normalizeTimes(
   value: unknown,
+  opts: { allowEmpty: boolean },
 ): { times: string[] } | { error: string } {
-  if (!Array.isArray(value) || value.length === 0) {
+  if (!Array.isArray(value)) {
+    return { error: "schedule.times must be an array of HH:MM" };
+  }
+  if (!opts.allowEmpty && value.length === 0) {
     return { error: "schedule.times must be a non-empty array of HH:MM" };
   }
   const times: string[] = [];
