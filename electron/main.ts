@@ -35,13 +35,18 @@ function panelUrl(): string {
   return `file://${path.join(app.getAppPath(), "dist", "index.html")}`;
 }
 
+const PANEL_WIDTH = 420;
+const PANEL_MIN_HEIGHT = 140;
+const PANEL_PAD = 8;
+
 function createPanel(): BrowserWindow {
   const win = new BrowserWindow({
-    width: 420,
-    height: 560,
+    width: PANEL_WIDTH,
+    height: PANEL_MIN_HEIGHT,
     show: false,
     frame: false,
     resizable: true,
+    useContentSize: true,
     skipTaskbar: true,
     alwaysOnTop: true,
     backgroundColor: "#0b1220",
@@ -60,6 +65,20 @@ function createPanel(): BrowserWindow {
   });
 
   return win;
+}
+
+function fitPanelToContent(contentHeight: number): void {
+  if (!panel) return;
+  const display = screen.getDisplayNearestPoint(
+    tray ? { x: tray.getBounds().x, y: tray.getBounds().y } : screen.getCursorScreenPoint(),
+  );
+  const maxH = Math.floor(display.workArea.height * 0.85);
+  const height = Math.min(
+    Math.max(Math.ceil(contentHeight) + PANEL_PAD, PANEL_MIN_HEIGHT),
+    maxH,
+  );
+  panel.setContentSize(PANEL_WIDTH, height);
+  if (panel.isVisible()) positionPanel(panel);
 }
 
 function positionPanel(win: BrowserWindow): void {
@@ -151,6 +170,12 @@ function wireIpc(): void {
 
   ipcMain.handle("cadence:openExternal", (_e, url: string) => {
     void shell.openExternal(url);
+  });
+
+  ipcMain.handle("cadence:fitHeight", (_e, height: number) => {
+    if (typeof height === "number" && Number.isFinite(height)) {
+      fitPanelToContent(height);
+    }
   });
 }
 
