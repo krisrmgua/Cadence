@@ -211,7 +211,7 @@ Use **Settings → Apps → Cadence → Uninstall**, or the uninstaller from the
 
 ## How to use the panel
 
-1. **Click the tray / menu-bar icon** to open the dark panel.
+1. **Click the tray / menu-bar icon** to open the dark panel. The icon is **green** when every enabled job’s last run is fine (or has not failed); it turns **red** when any enabled job last failed or was killed.
 2. Tabs:
    - **Jobs** — list, enable/disable, run now, delete
    - **History** — recent runs with status, exit code, and captured output
