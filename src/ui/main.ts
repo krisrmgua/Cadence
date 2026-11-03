@@ -174,20 +174,91 @@ function renderJobs(): void {
 
   jobsView.querySelectorAll<HTMLElement>(".card").forEach((card) => {
     const id = card.dataset.id!;
+    const job = state.jobs.find((j) => j.id === id);
     card.querySelectorAll("button").forEach((btn) => {
       btn.addEventListener("click", async () => {
+        if (!job) return;
         const act = btn.getAttribute("data-act");
-        if (act === "run") await window.cadence.runJob(id);
-        if (act === "delete") await window.cadence.deleteJob(id);
+        if (act === "run") {
+          const ok = await askConfirm({
+            title: "Run now?",
+            message: `Run “${job.name}” immediately?`,
+            confirmLabel: "Run now",
+            danger: false,
+          });
+          if (!ok) return;
+          await window.cadence.runJob(id);
+        }
+        if (act === "delete") {
+          const ok = await askConfirm({
+            title: "Delete job?",
+            message: `Delete “${job.name}”? This cannot be undone. Past runs stay in History.`,
+            confirmLabel: "Delete",
+            danger: true,
+          });
+          if (!ok) return;
+          await window.cadence.deleteJob(id);
+        }
         if (act === "toggle") {
-          const job = state.jobs.find((j) => j.id === id);
-          if (job) {
-            await window.cadence.updateJob(id, { enabled: !job.enabled });
-          }
+          const enabling = !job.enabled;
+          const ok = await askConfirm({
+            title: enabling ? "Enable job?" : "Disable job?",
+            message: enabling
+              ? `Enable “${job.name}” so Cadence can fire it on schedule?`
+              : `Disable “${job.name}”? It will stay in the list but will not run on schedule.`,
+            confirmLabel: enabling ? "Enable" : "Disable",
+            danger: false,
+          });
+          if (!ok) return;
+          await window.cadence.updateJob(id, { enabled: enabling });
         }
         await refresh();
       });
     });
+  });
+}
+
+function askConfirm(opts: {
+  title: string;
+  message: string;
+  confirmLabel: string;
+  danger: boolean;
+}): Promise<boolean> {
+  const root = document.getElementById("confirm")!;
+  const title = document.getElementById("confirm-title")!;
+  const message = document.getElementById("confirm-message")!;
+  const cancel = document.getElementById("confirm-cancel") as HTMLButtonElement;
+  const ok = document.getElementById("confirm-ok") as HTMLButtonElement;
+
+  title.textContent = opts.title;
+  message.textContent = opts.message;
+  ok.textContent = opts.confirmLabel;
+  ok.className = opts.danger ? "danger" : "primary";
+  root.classList.remove("hidden");
+  ok.focus();
+
+  return new Promise((resolve) => {
+    const finish = (value: boolean) => {
+      root.classList.add("hidden");
+      cancel.removeEventListener("click", onCancel);
+      ok.removeEventListener("click", onOk);
+      root.removeEventListener("click", onBackdrop);
+      document.removeEventListener("keydown", onKey);
+      resolve(value);
+    };
+    const onCancel = () => finish(false);
+    const onOk = () => finish(true);
+    const onBackdrop = (e: MouseEvent) => {
+      if (e.target === root) finish(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") finish(false);
+      if (e.key === "Enter") finish(true);
+    };
+    cancel.addEventListener("click", onCancel);
+    ok.addEventListener("click", onOk);
+    root.addEventListener("click", onBackdrop);
+    document.addEventListener("keydown", onKey);
   });
 }
 
