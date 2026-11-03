@@ -465,6 +465,10 @@ scripts/      install.sh, install.ps1
 
 ---
 
+## Version
+
+The shipping version is `package.json` → `version` (currently **0.2.0**). The panel header shows it as `v0.2.0`. Bump that field before each release you push and package; Electron Builder embeds it into the app so `app.getVersion()` matches.
+
 ## License
 
 MIT. See [LICENSE](LICENSE).

@@ -135,6 +135,7 @@ function wireIpc(): void {
     runs: store.listRuns(80),
     apiPort,
     platform: process.platform,
+    version: app.getVersion(),
   }));
 
   ipcMain.handle("cadence:createJob", (_e, input: CreateJobInput) => {
