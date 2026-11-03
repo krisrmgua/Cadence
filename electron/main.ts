@@ -3,18 +3,20 @@ import {
   BrowserWindow,
   Tray,
   Menu,
-  nativeImage,
   ipcMain,
   shell,
   screen,
 } from "electron";
 import path from "node:path";
-import fs from "node:fs";
 import { Store } from "./store";
 import { Runner } from "./runner";
 import { Scheduler } from "./scheduler";
 import { LocalApi } from "./api";
-import { assetPath } from "./paths";
+import {
+  createTrayIcon,
+  trayHealthFromJobs,
+  type TrayHealth,
+} from "./trayIcon";
 import type { CreateJobInput, UpdateJobInput } from "./types";
 
 let tray: Tray | null = null;
@@ -24,23 +26,9 @@ let runner: Runner;
 let scheduler: Scheduler;
 let api: LocalApi;
 let apiPort = 3927;
+let trayHealth: TrayHealth = "ok";
 
 const isDev = process.env.CADENCE_DEV === "1";
-
-function createTrayIcon(): Electron.NativeImage {
-  const png = assetPath("trayTemplate.png");
-  if (fs.existsSync(png)) {
-    const img = nativeImage.createFromPath(png);
-    if (process.platform === "darwin") img.setTemplateImage(true);
-    return img.resize({ width: 18, height: 18 });
-  }
-  // 16x16 dark square fallback encoded as PNG
-  const fallback = nativeImage.createFromDataURL(
-    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAKUlEQVQ4T2NkYGD4z0ABYBzVMKoBBgYGBgYGRgYGhv8MDAwMjAyjgQcAHwQBBQF3V0YAAAAASUVORK5CYII=",
-  );
-  if (process.platform === "darwin") fallback.setTemplateImage(true);
-  return fallback;
-}
 
 function panelUrl(): string {
   if (isDev) return "http://127.0.0.1:5173";
@@ -107,7 +95,19 @@ function togglePanel(): void {
 }
 
 function broadcast(): void {
+  refreshTray();
   panel?.webContents.send("cadence:changed");
+}
+
+function refreshTray(): void {
+  if (!tray || !store) return;
+  const next = trayHealthFromJobs(store.listJobs());
+  if (next !== trayHealth) {
+    trayHealth = next;
+    tray.setImage(createTrayIcon(trayHealth));
+  }
+  const status = trayHealth === "fail" ? "failures" : "ok";
+  tray.setToolTip(`Cadence · ${status} · API :${apiPort}`);
 }
 
 function wireIpc(): void {
@@ -165,12 +165,20 @@ async function boot(): Promise<void> {
   apiPort = await api.start(store.getApiPort());
   scheduler.start();
 
-  tray = new Tray(createTrayIcon());
-  tray.setToolTip(`Cadence · API :${apiPort}`);
+  trayHealth = trayHealthFromJobs(store.listJobs());
+  tray = new Tray(createTrayIcon(trayHealth));
+  refreshTray();
   tray.on("click", () => togglePanel());
   tray.on("right-click", () => {
     const menu = Menu.buildFromTemplate([
       { label: "Open Cadence", click: () => togglePanel() },
+      {
+        label:
+          trayHealth === "fail"
+            ? "Status: failures"
+            : "Status: ok",
+        enabled: false,
+      },
       { label: `API http://127.0.0.1:${apiPort}`, enabled: false },
       { type: "separator" },
       { label: "Quit", click: () => app.quit() },
