@@ -14,4 +14,5 @@ contextBridge.exposeInMainWorld("cadence", {
   },
   hide: () => ipcRenderer.invoke("cadence:hide"),
   openExternal: (url: string) => ipcRenderer.invoke("cadence:openExternal", url),
+  fitHeight: (height: number) => ipcRenderer.invoke("cadence:fitHeight", height),
 });

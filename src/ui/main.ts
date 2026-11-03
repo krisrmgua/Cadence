@@ -51,6 +51,7 @@ declare global {
       runJob: (id: string) => Promise<JobRun | { error: string }>;
       onChanged: (cb: () => void) => () => void;
       hide: () => Promise<void>;
+      fitHeight: (height: number) => Promise<void>;
     };
   }
 }
@@ -77,8 +78,18 @@ document.querySelectorAll<HTMLButtonElement>(".tab").forEach((btn) => {
       .forEach((v) => v.classList.remove("active"));
     btn.classList.add("active");
     document.getElementById(`view-${btn.dataset.tab}`)?.classList.add("active");
+    requestFit();
   });
 });
+
+function requestFit(): void {
+  requestAnimationFrame(() => {
+    const app = document.getElementById("app");
+    if (!app) return;
+    const height = Math.ceil(app.getBoundingClientRect().height);
+    void window.cadence.fitHeight(height);
+  });
+}
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -193,6 +204,7 @@ function renderJobs(): void {
       if (expandedJobs.has(id)) expandedJobs.delete(id);
       else expandedJobs.add(id);
       renderJobs();
+      requestFit();
     });
     card.querySelectorAll<HTMLButtonElement>(".row-actions button").forEach((btn) => {
       btn.addEventListener("click", async (e) => {
@@ -318,9 +330,11 @@ async function refresh(): Promise<void> {
   apiLine.textContent = `API http://127.0.0.1:${state.apiPort} · ${state.platform}`;
   renderJobs();
   renderHistory();
+  requestFit();
 }
 
 void refresh();
 window.cadence.onChanged(() => {
   void refresh();
 });
+window.addEventListener("load", () => requestFit());
