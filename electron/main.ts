@@ -35,7 +35,7 @@ function panelUrl(): string {
   return `file://${path.join(app.getAppPath(), "dist", "index.html")}`;
 }
 
-const PANEL_WIDTH = 420;
+const PANEL_WIDTH = 452;
 const PANEL_MIN_HEIGHT = 140;
 const PANEL_PAD = 8;
 
@@ -45,7 +45,9 @@ function createPanel(): BrowserWindow {
     height: PANEL_MIN_HEIGHT,
     show: false,
     frame: false,
-    resizable: true,
+    resizable: false,
+    maximizable: false,
+    fullscreenable: false,
     useContentSize: true,
     skipTaskbar: true,
     alwaysOnTop: true,
