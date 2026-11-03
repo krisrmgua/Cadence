@@ -36,6 +36,7 @@ interface State {
   runs: JobRun[];
   apiPort: number;
   platform: string;
+  version: string;
 }
 
 declare global {
@@ -58,7 +59,7 @@ declare global {
 
 const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-let state: State = { jobs: [], runs: [], apiPort: 0, platform: "" };
+let state: State = { jobs: [], runs: [], apiPort: 0, platform: "", version: "" };
 /** Job ids the user has expanded; cards start collapsed. */
 const expandedJobs = new Set<string>();
 
@@ -327,7 +328,7 @@ function escapeHtml(s: string): string {
 
 async function refresh(): Promise<void> {
   state = await window.cadence.getState();
-  apiLine.textContent = `API http://127.0.0.1:${state.apiPort} · ${state.platform}`;
+  apiLine.textContent = `v${state.version} · API http://127.0.0.1:${state.apiPort} · ${state.platform}`;
   renderJobs();
   renderHistory();
   requestFit();
