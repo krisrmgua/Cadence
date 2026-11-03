@@ -37,7 +37,6 @@ function panelUrl(): string {
 
 const PANEL_WIDTH = 452;
 const PANEL_MIN_HEIGHT = 140;
-const PANEL_PAD = 8;
 
 function createPanel(): BrowserWindow {
   const win = new BrowserWindow({
@@ -76,9 +75,10 @@ function fitPanelToContent(contentHeight: number): void {
   );
   const maxH = Math.floor(display.workArea.height * 0.85);
   const height = Math.min(
-    Math.max(Math.ceil(contentHeight) + PANEL_PAD, PANEL_MIN_HEIGHT),
+    Math.max(Math.round(contentHeight), PANEL_MIN_HEIGHT),
     maxH,
   );
+  // Match content exactly — extra pad showed the window chrome color under the UI.
   panel.setContentSize(PANEL_WIDTH, height);
   if (panel.isVisible()) positionPanel(panel);
 }
