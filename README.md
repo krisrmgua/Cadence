@@ -460,3 +460,19 @@ scripts/      install.sh, install.ps1
 - No cloud sync, no analytics, no account.
 - The HTTP API binds to **localhost only**.
 - Commands you schedule run with **your user privileges** — treat API access on your machine like shell access.
+
+---
+
+## License
+
+MIT. See [LICENSE](LICENSE).
+
+## Contributing
+
+Cadence is open source. Issues and pull requests are welcome.
+
+- [CONTRIBUTING.md](CONTRIBUTING.md) — how to build, branch, and open a PR
+- [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
+- [SECURITY.md](SECURITY.md) — how to report vulnerabilities
+
+`main` is protected: changes land through a pull request (direct pushes to `main` are blocked).
