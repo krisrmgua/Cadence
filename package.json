@@ -1,6 +1,6 @@
 {
   "name": "cadence",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Local AI-schedulable job runner with tray UI for macOS and Windows",
   "main": "dist-electron/main.js",
   "author": "Kristopher Simmons",
