@@ -2,6 +2,12 @@
 
 Production renderer, fictional jobs, version 0.2.4. No real commands are executed and no private application data is read.
 
+
+## Menu-bar icons and views
+
+[Open the complete menu-bar gallery](../menu-bar.md), including the actual icon artwork and supported display states.
+
+
 ## Recreate and verify the editor
 
 ```bash

@@ -1,5 +1,13 @@
 [
   {
+    "file": "menu-bar.png",
+    "caption": "Actual Cadence menu-bar clock icons: green for healthy jobs and red for an enabled job failure.",
+    "size": {
+      "width": 1080,
+      "height": 536
+    }
+  },
+  {
     "file": "jobs.png",
     "caption": "Scheduled jobs with passing, running, failed, and paused states.",
     "size": {

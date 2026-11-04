@@ -36,6 +36,10 @@ app.whenReady().then(async () => {
   await win.loadFile(path.join(root, 'dist/index.html'));
   await pause(500);
   const manifest = [];
+  const menu = await require('./screenshots/menu.cjs')(root, output);
+  const menuItems = Array.isArray(menu) ? menu : [menu];
+  manifest.push(...menuItems);
+  fs.writeFileSync(path.join(output,'menu-manifest.json'),JSON.stringify(menuItems,null,2)+'\n');
   for (const shot of fixture.shots) {
     if (shot.height) { heightLimit = shot.height; win.setContentSize(fixture.width, shot.height); }
     if (shot.patch) { win.webContents.send('capture:update', shot.patch); await pause(100); }
