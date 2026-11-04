@@ -44,3 +44,39 @@ Production build, renderer TypeScript check, PNG integrity/dimensions, documenta
 ## Follow-up polish
 
 P3: Completed steps retain their numbers with completed styling instead of the illustration's checkmark; native platform radio, number, and select appearance differs slightly from generated controls.
+
+# Jobs action cards — option 5
+
+final result: passed
+
+## Visual evidence
+
+- Selected reference: `designs/jobs/reference.png`.
+- Actual production renderer: `docs/screenshots/jobs.png`, 904px wide at 2x (452 CSS pixels).
+- Side-by-side comparison: `designs/jobs/comparison.png`; focused cards: `designs/jobs/card-comparison.png`. Reference width normalized proportionally; no vertical stretching.
+- All screenshots use synthetic jobs and output; no user commands are executed by the capture harness.
+- Compared title/count, state badges, colored accent, schedule/last-run hierarchy, enabled switches, Edit/Run/overflow footer, expanded failure summary, command, and history action.
+- First pass found an editor-summary class collision, excessive failure detail height, blue rather than green enabled switches, and misplaced failure/actions ordering. Renamed the card summary class, reduced spacing, matched green switches, placed failure details before the footer, and aligned the log link in the failure panel; rebuilt and recaptured.
+- Native system fonts and the existing header dimensions are retained. Dates use real locale formatting and missing history says “Not run yet”. Failure uses a standard Octicon rather than the generated illustration’s glyph. These are intentional adaptations.
+- Existing guided Job / Schedule / Review editor is preserved. Original uncommitted edits in the other checkout were left untouched.
+
+## Verification
+
+- Production build and UI/Electron TypeScript checks passed.
+- 24 isolated Electron screenshot scenarios passed without renderer errors, including the original guided scheduler checks plus overflow, cancelled pause, confirmed pause, paused manual run, disabled duplicate run, correct history highlight by job ID, confirmed delete, long names without horizontal overflow, and empty list.
+- Corrected two pre-existing synthetic fixture job-ID associations so failure/running previews match the actual jobs.
+- Real API errors are surfaced in a visible alert; running and pending jobs disable manual Run now.
+- Packaged macOS arm64 0.2.5, locally signed and verified. Installed app bundle update preserves the separate user-data directory and keeps the previous bundle in a temporary backup.
+- Visual and interaction verification uses the real production renderer with a fixture bridge. Native app launch/version/signature are checked separately; this does not claim a native accessibility automation pass.
+
+## History job filter follow-up
+
+Added only the job dropdown to the existing History layout, per the narrowed request. Options use job IDs and include historical/deleted jobs. Selection persists across data refresh; All jobs restores the full list. View last run clears filters so its target remains reachable. Production build, TypeScript, fixture syntax validation, and 26 renderer scenarios passed, including single-job and all-job assertions. Inspected `docs/screenshots/history-job-filter.png`. The earlier screenshot-fixture quoting mistake is corrected; fixture-load errors now exit the capture process with stderr rather than an uncaught Electron dialog. Updated the installed app while preserving user data.
+
+# History timeline correction — 0.2.6
+
+final result: passed
+
+The user's reattached timeline image is the source of truth (`designs/history/reference.png`). The earlier ledger interpretation was discarded. `designs/history/comparison.png` compares the source and production capture at a normalized 904px width. Timeline lines and status nodes, grouped dates, green/red/amber states, failure summary and full output, and all four status filters match that structure. The requested job dropdown adds a row. Native system typography is retained and text wraps at the real 452pt panel width rather than shrinking to fit the illustration. No running duration is invented; completed durations derive from recorded timestamps.
+
+Build and TypeScript checks passed. All 31 isolated production-renderer scenarios passed, including each status filter, combined job/status empty state, restoring All, previous-day grouping in the capture, and job-to-history navigation. README screenshots refreshed with fictional data. Packaged 0.2.6, locally signed and signature-verified before installation; user jobs/history remain in the separate data directory.

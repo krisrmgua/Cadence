@@ -12,15 +12,15 @@
     "caption": "Scheduled jobs with passing, running, failed, and paused states.",
     "size": {
       "width": 904,
-      "height": 600
+      "height": 1382
     }
   },
   {
     "file": "job-details.png",
-    "caption": "Expanded job: command, schedule, enable/disable, run, and delete actions.",
+    "caption": "Job details: command, failure summary, last-run logs, and quick actions.",
     "size": {
       "width": 904,
-      "height": 828
+      "height": 1570
     }
   },
   {
@@ -28,7 +28,7 @@
     "caption": "Run-now confirmation before a command is executed.",
     "size": {
       "width": 904,
-      "height": 828
+      "height": 1570
     }
   },
   {
@@ -36,7 +36,7 @@
     "caption": "Delete-job confirmation with the actual destructive-action wording.",
     "size": {
       "width": 904,
-      "height": 828
+      "height": 1570
     }
   },
   {
@@ -44,7 +44,63 @@
     "caption": "Run history with status, exit codes, stdout, and stderr.",
     "size": {
       "width": 904,
-      "height": 1084
+      "height": 1700
+    }
+  },
+  {
+    "file": "history-job-filter.png",
+    "caption": "History filtered to one job.",
+    "size": {
+      "width": 904,
+      "height": 896
+    }
+  },
+  {
+    "file": "history-all-jobs.png",
+    "caption": "All jobs restores the complete history.",
+    "size": {
+      "width": 904,
+      "height": 1700
+    }
+  },
+  {
+    "file": "history-failed.png",
+    "caption": "Timeline filtered to failed executions.",
+    "size": {
+      "width": 904,
+      "height": 896
+    }
+  },
+  {
+    "file": "history-passed.png",
+    "caption": "Timeline filtered to passed executions.",
+    "size": {
+      "width": 904,
+      "height": 1014
+    }
+  },
+  {
+    "file": "history-running.png",
+    "caption": "Timeline filtered to running executions.",
+    "size": {
+      "width": 904,
+      "height": 680
+    }
+  },
+  {
+    "file": "history-combined-filter.png",
+    "caption": "Job and status filters work together.",
+    "size": {
+      "width": 904,
+      "height": 500
+    }
+  },
+  {
+    "file": "history-restored.png",
+    "caption": "Restore all statuses and jobs.",
+    "size": {
+      "width": 904,
+      "height": 1700
     }
   },
   {
@@ -100,7 +156,7 @@
     "caption": "Saved clock-time job with the hidden interval removed.",
     "size": {
       "width": 904,
-      "height": 966
+      "height": 1700
     }
   },
   {
@@ -124,7 +180,7 @@
     "caption": "Interval edit preserves job identity and submits minutes without clock-time/day restrictions.",
     "size": {
       "width": 904,
-      "height": 1194
+      "height": 1700
     }
   },
   {
@@ -133,6 +189,70 @@
     "size": {
       "width": 904,
       "height": 1040
+    }
+  },
+  {
+    "file": "job-actions-menu.png",
+    "caption": "Compact overflow menu keeps destructive actions separate.",
+    "size": {
+      "width": 904,
+      "height": 1040
+    }
+  },
+  {
+    "file": "pause-cancel.png",
+    "caption": "Cancel leaves the schedule enabled.",
+    "size": {
+      "width": 904,
+      "height": 1040
+    }
+  },
+  {
+    "file": "paused-job.png",
+    "caption": "Pausing updates the visible switch and status.",
+    "size": {
+      "width": 904,
+      "height": 1040
+    }
+  },
+  {
+    "file": "manual-run.png",
+    "caption": "Paused schedules can still run manually, with duplicate runs disabled.",
+    "size": {
+      "width": 904,
+      "height": 1040
+    }
+  },
+  {
+    "file": "linked-history.png",
+    "caption": "View last run opens and highlights the correct execution.",
+    "size": {
+      "width": 904,
+      "height": 1040
+    }
+  },
+  {
+    "file": "delete-job.png",
+    "caption": "Confirmed deletion removes only the selected job.",
+    "size": {
+      "width": 904,
+      "height": 1040
+    }
+  },
+  {
+    "file": "long-job-name.png",
+    "caption": "Long job names wrap while actions stay in the panel.",
+    "size": {
+      "width": 904,
+      "height": 602
+    }
+  },
+  {
+    "file": "empty-jobs.png",
+    "caption": "An empty Jobs list offers a clear starting point.",
+    "size": {
+      "width": 904,
+      "height": 382
     }
   }
 ]
