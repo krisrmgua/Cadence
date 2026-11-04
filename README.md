@@ -6,6 +6,38 @@ Schedule shell commands for specific days and times, run them on demand, keep st
 
 Cadence stays in the menu bar (Mac) or system tray (Windows). Click the icon to open the panel. It does not need a browser tab or a cloud account.
 
+
+## Screenshots
+
+Screenshots of the current Electron interface on macOS, using fictional projects, accounts, jobs, and values. No personal data or live credentials are used.
+
+<a href="docs/screenshots/jobs.png"><img src="docs/screenshots/jobs.png" alt="Cadence main view with sample data" width="460" /></a>
+
+The gallery includes detail views, settings, and available actions. Click an image for the full-resolution capture.
+
+<details>
+<summary>View all 7 screenshots</summary>
+
+| Jobs | Job Details |
+| --- | --- |
+| <a href="docs/screenshots/jobs.png"><img src="docs/screenshots/jobs.png" alt="Scheduled jobs with passing, running, failed, and paused states." width="360" /></a><br>Scheduled jobs with passing, running, failed, and paused states. | <a href="docs/screenshots/job-details.png"><img src="docs/screenshots/job-details.png" alt="Expanded job: command, schedule, enable/disable, run, and delete actions." width="360" /></a><br>Expanded job: command, schedule, enable/disable, run, and delete actions. |
+
+| Run Confirmation | Delete Confirmation |
+| --- | --- |
+| <a href="docs/screenshots/run-confirmation.png"><img src="docs/screenshots/run-confirmation.png" alt="Run-now confirmation before a command is executed." width="360" /></a><br>Run-now confirmation before a command is executed. | <a href="docs/screenshots/delete-confirmation.png"><img src="docs/screenshots/delete-confirmation.png" alt="Delete-job confirmation with the actual destructive-action wording." width="360" /></a><br>Delete-job confirmation with the actual destructive-action wording. |
+
+| History | New Job |
+| --- | --- |
+| <a href="docs/screenshots/history.png"><img src="docs/screenshots/history.png" alt="Run history with status, exit codes, stdout, and stderr." width="360" /></a><br>Run history with status, exit codes, stdout, and stderr. | <a href="docs/screenshots/new-job.png"><img src="docs/screenshots/new-job.png" alt="New calendar job: command, directory, times, weekdays, and enabled state." width="360" /></a><br>New calendar job: command, directory, times, weekdays, and enabled state. |
+
+| Interval Job |  |
+| --- | --- |
+| <a href="docs/screenshots/interval-job.png"><img src="docs/screenshots/interval-job.png" alt="Interval scheduling uses the same New form." width="360" /></a><br>Interval scheduling uses the same New form. |  |
+
+</details>
+
+[How these screenshots are made](docs/screenshots/README.md)
+
 ---
 
 ## What it does
