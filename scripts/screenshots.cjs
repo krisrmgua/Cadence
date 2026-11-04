@@ -3,7 +3,9 @@ const { app, BrowserWindow, ipcMain, session } = require('electron');
 const fs = require('node:fs');
 const path = require('node:path');
 const os = require('node:os');
-const fixture = require('./screenshots/fixture.cjs');
+let fixture;
+try { fixture = require('./screenshots/fixture.cjs'); }
+catch (error) { console.error('Screenshot fixture could not be loaded:', error); app.exit(1); }
 const root = path.resolve(__dirname, '..');
 const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'readme-capture-'));
 app.setPath('userData', temporary);

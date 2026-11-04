@@ -88,7 +88,7 @@ module.exports = {
       },
       {
         "id": "1",
-        "jobId": "1",
+        "jobId": "2",
         "jobName": "Weekly report",
         "startedAt": "2026-11-04T15:29:28.428689+00:00",
         "finishedAt": "2026-11-04T15:30:28.428689+00:00",
@@ -100,7 +100,7 @@ module.exports = {
       },
       {
         "id": "2",
-        "jobId": "2",
+        "jobId": "1",
         "jobName": "API health check",
         "startedAt": "2026-11-04T15:09:28.428689+00:00",
         "finishedAt": "2026-11-04T15:10:28.428689+00:00",
@@ -113,7 +113,7 @@ module.exports = {
     ],
     "apiPort": 3927,
     "platform": "darwin",
-    "version": "0.2.4"
+    "version": "0.2.5"
   },
   "shots": [
     {
@@ -124,8 +124,8 @@ module.exports = {
     },
     {
       "name": "job-details",
-      "caption": "Expanded job: command, schedule, enable/disable, run, and delete actions.",
-      "action": "document.querySelector(\".job-toggle\").click();",
+      "caption": "Job details: command, failure summary, last-run logs, and quick actions.",
+      "action": "document.querySelector(\"[data-act=details]\").click();",
       "expect": "Run now"
     },
     {
@@ -146,6 +146,8 @@ module.exports = {
       "action": "document.querySelector(\"#confirm-cancel\").click();document.querySelector(\"[data-tab=\\\"history\\\"]\").click();",
       "expect": "Backup complete."
     },
+    {name:'history-job-filter',caption:'History filtered to one job.',action:'document.querySelector("#history-job-filter").value="2";document.querySelector("#history-job-filter").dispatchEvent(new Event("change",{bubbles:true}));',check:'document.querySelectorAll("[data-run-id]").length===1 && document.querySelector("[data-run-id]").dataset.runId==="1"'},
+    {name:'history-all-jobs',caption:'All jobs restores the complete history.',action:'document.querySelector("#history-job-filter").value="";document.querySelector("#history-job-filter").dispatchEvent(new Event("change",{bubbles:true}));',check:'document.querySelectorAll("[data-run-id]").length===3'},
     {
       "name": "new-job",
       "caption": "Job step: name, command, and optional working directory.",
@@ -198,7 +200,7 @@ module.exports = {
     {
       "name": "edit-interval",
       "caption": "Editing an existing interval job opens its saved Schedule directly.",
-      "action": "document.querySelector(\".job-card[data-id=\\\"1\\\"] .job-toggle\").click();document.querySelector(\".job-card[data-id=\\\"1\\\"] [data-act=\\\"edit\\\"]\").click();",
+      "action": "document.querySelector(\".job-card[data-id=\\\"1\\\"] [data-act=details]\").click();document.querySelector(\".job-card[data-id=\\\"1\\\"] [data-act=\\\"edit\\\"]\").click();",
       "expect": "Every 15 minutes, every day.",
       "check": ""
     },
@@ -219,10 +221,20 @@ module.exports = {
     {
       "name": "short-window",
       "caption": "Schedule remains scrollable and actions stay accessible on a shorter display.",
-      "action": "document.querySelector('.job-card[data-id=\"1\"] .job-toggle').click();document.querySelector('.job-card[data-id=\"1\"] [data-act=\"edit\"]').click();",
+      "action": "document.querySelector('.job-card[data-id=\"1\"] [data-act=details]').click();document.querySelector('.job-card[data-id=\"1\"] [data-act=\"edit\"]').click();",
       "height": 520,
       "expect": "How often should it run?",
       "check": "document.querySelector(\"#form-save\").getBoundingClientRect().bottom<=innerHeight && document.querySelector(\"main\").scrollHeight>document.querySelector(\"main\").clientHeight"
-    }
+    },
+    {name:'job-actions-menu',caption:'Compact overflow menu keeps destructive actions separate.',action:'document.querySelector("[data-tab=jobs]").click();document.querySelector(".job-menu summary").click();',expect:'Delete job…'},
+    {name:'pause-cancel',caption:'Cancel leaves the schedule enabled.',action:'document.querySelector(".job-switch").click();document.querySelector("#confirm-cancel").click();',check:'document.querySelector(".job-switch").getAttribute("aria-checked")==="true"'},
+    {name:'paused-job',caption:'Pausing updates the visible switch and status.',action:'document.querySelector(".job-switch").click();document.querySelector("#confirm-ok").click();',check:'document.querySelector(".job-switch").getAttribute("aria-checked")==="false"'},
+    {name:'manual-run',caption:'Paused schedules can still run manually, with duplicate runs disabled.',action:'document.querySelector("[data-act=run]").click();document.querySelector("#confirm-ok").click();',check:'document.querySelector("[data-act=run]").disabled && window.screenshotTest.calls().filter(c=>c.action==="run").length===1'},
+    {name:'linked-history',caption:'View last run opens and highlights the correct execution.',action:'document.querySelector("[data-act=history]").click();',check:'document.querySelector(".selected-run").dataset.runId==="0"'},
+    {name:'delete-job',caption:'Confirmed deletion removes only the selected job.',action:'document.querySelector("[data-tab=jobs]").click();document.querySelector("[data-act=delete]").click();document.querySelector("#confirm-ok").click();',check:'!document.querySelector(".action-card[data-id=demo-created]") && window.screenshotTest.calls().some(c=>c.action==="delete")'}
+,
+    {name:'long-job-name',caption:'Long job names wrap while actions stay in the panel.',patch:{jobs:[{id:'long',name:'Archive and verify the development team’s complete weekly project snapshots',command:'echo demo',enabled:true,createdBy:'ui',schedule:{times:['09:00','12:00','18:00'],days:[1,3,5]}}],runs:[]},check:'document.documentElement.scrollWidth<=innerWidth && document.querySelector("[data-act=run]").getBoundingClientRect().right<=innerWidth'},
+    {name:'empty-jobs',caption:'An empty Jobs list offers a clear starting point.',patch:{jobs:[],runs:[]},expect:'Choose New to schedule your first job.'}
+
   ]
 };

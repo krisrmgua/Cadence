@@ -1,3 +1,6 @@
+import alertIcon from "@primer/octicons/build/svg/alert-16.svg?raw";
+import clockIcon from "@primer/octicons/build/svg/clock-16.svg?raw";
+import moreIcon from "@primer/octicons/build/svg/kebab-horizontal-16.svg?raw";
 type Weekday = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
 interface JobSchedule {
@@ -430,103 +433,61 @@ function scheduleLabel(job: Job): string {
   return described.line.replace(/^Will run /, "").replace(/\.$/, "");
 }
 
+const pendingJobs = new Set<string>();
+const seenFailures = new Set<string>();
+let jobsError = "";
+function latestRun(job: Job): JobRun | undefined {
+  return state.runs.filter(run => run.jobId === job.id).sort((a, b) => Date.parse(b.startedAt) - Date.parse(a.startedAt))[0];
+}
 function renderJobs(): void {
-  if (!state.jobs.length) {
-    jobsView.innerHTML = `<div class="empty">No jobs yet. Use New, or POST to the local API.</div>`;
-    return;
-  }
-  // Drop expansion for jobs that no longer exist.
-  for (const id of [...expandedJobs]) {
-    if (!state.jobs.some((j) => j.id === id)) expandedJobs.delete(id);
-  }
-
-  jobsView.innerHTML = state.jobs
-    .map((job) => {
-      const status = job.lastStatus
-        ? `<span class="badge ${job.lastStatus}">${job.lastStatus}</span>`
-        : `<span class="badge">${job.enabled ? "armed" : "paused"}</span>`;
-      const open = expandedJobs.has(job.id);
-      const sched = escapeHtml(scheduleLabel(job));
-      return `<article class="card job-card${open ? " open" : " collapsed"}" data-id="${job.id}">
-        <button type="button" class="card-head job-toggle" aria-expanded="${open ? "true" : "false"}">
-          <span class="chev" aria-hidden="true"></span>
-          <span class="job-head-main">
-            <span class="job-title">${escapeHtml(job.name)}</span>
-            <span class="job-sched">${sched}</span>
-          </span>
-          ${status}
-        </button>
-        <div class="job-body">
-          <div class="meta">
-            <div class="mono">${escapeHtml(job.command)}</div>
-            <div>${job.cwd ? escapeHtml(job.cwd) : "cwd: home"} · via ${job.createdBy}</div>
-          </div>
-          <div class="row-actions">
-            <button class="ghost" data-act="edit">Edit</button>
-            <button class="ghost" data-act="toggle">${job.enabled ? "Disable" : "Enable"}</button>
-            <button class="primary" data-act="run">Run now</button>
-            <button class="danger" data-act="delete">Delete</button>
-          </div>
-        </div>
-      </article>`;
-    })
-    .join("");
-
-  jobsView.querySelectorAll<HTMLElement>(".job-card").forEach((card) => {
-    const id = card.dataset.id!;
-    const job = state.jobs.find((j) => j.id === id);
-    card.querySelector(".job-toggle")?.addEventListener("click", () => {
-      if (expandedJobs.has(id)) expandedJobs.delete(id);
-      else expandedJobs.add(id);
-      renderJobs();
-      requestFit();
-    });
-    card.querySelectorAll<HTMLButtonElement>(".row-actions button").forEach((btn) => {
-      btn.addEventListener("click", async (e) => {
-        e.stopPropagation();
-        if (!job) return;
-        const act = btn.getAttribute("data-act");
-        if (act === "edit") {
-          openEditor(job);
-          return;
-        }
-        if (act === "run") {
-          const ok = await askConfirm({
-            title: "Run now?",
-            message: `Run “${job.name}” immediately?`,
-            confirmLabel: "Run now",
-            danger: false,
-          });
-          if (!ok) return;
-          await window.cadence.runJob(id);
-        }
-        if (act === "delete") {
-          const ok = await askConfirm({
-            title: "Delete job?",
-            message: `Delete “${job.name}”? This cannot be undone. Past runs stay in History.`,
-            confirmLabel: "Delete",
-            danger: true,
-          });
-          if (!ok) return;
-          await window.cadence.deleteJob(id);
-        }
-        if (act === "toggle") {
-          const enabling = !job.enabled;
-          const ok = await askConfirm({
-            title: enabling ? "Enable job?" : "Disable job?",
-            message: enabling
-              ? `Enable “${job.name}” so Cadence can fire it on schedule?`
-              : `Disable “${job.name}”? It will stay in the list but will not run on schedule.`,
-            confirmLabel: enabling ? "Enable" : "Disable",
-            danger: false,
-          });
-          if (!ok) return;
-          await window.cadence.updateJob(id, { enabled: enabling });
-        }
-        await refresh();
-      });
-    });
-  });
+  const cards = state.jobs.map(job => {
+    const run = latestRun(job);
+    const running = pendingJobs.has(job.id) || job.lastStatus === "running" || run?.status === "running";
+    const outcome = running ? "running" : (job.lastStatus || run?.status || "ready");
+    const failed = outcome === "fail" || outcome === "killed";
+    const failureKey = `${job.id}:${run?.id || job.lastRunAt || "failed"}`;
+    if (failed && !seenFailures.has(failureKey)) { seenFailures.add(failureKey); expandedJobs.add(job.id); }
+    const open = expandedJobs.has(job.id);
+    const label = !job.enabled && !running ? "Paused" : ({ok:"Passed",fail:"Failed",killed:"Stopped",running:"Running",ready:"Ready"}[outcome]);
+    const when = run?.startedAt || job.lastRunAt;
+    const failure = failed && run ? (run.stderr || run.stdout).split("\n").find(line => line.trim()) : "";
+    return `<article class="card job-card action-card ${!job.enabled ? "paused" : outcome}" data-id="${escapeHtml(job.id)}">
+      <div class="action-card-heading"><h3>${escapeHtml(job.name)}</h3><span class="badge ${outcome}">${label}</span></div>
+      <div class="action-summary"><span class="job-schedule">${clockIcon}${escapeHtml(scheduleLabel(job).replace(/^every day, /, "").replace(/^./, c => c.toUpperCase()))}</span><span class="last-run">${when ? `Last run: ${escapeHtml(new Date(when).toLocaleString([], {month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}))}` : "Not run yet"}</span></div>
+      <div class="job-footer"><button class="job-switch" role="switch" aria-checked="${job.enabled}" aria-label="${job.enabled ? "Pause" : "Enable"} ${escapeHtml(job.name)}" data-act="toggle"><span class="switch-track"><span></span></span>${job.enabled ? "Enabled" : "Paused"}</button><div class="quick-actions"><button class="ghost" data-act="edit">Edit</button><button class="run-action" data-act="run" ${running ? "disabled" : ""}>${running ? "Running" : "Run now"}</button><details class="job-menu"><summary aria-label="More actions for ${escapeHtml(job.name)}">${moreIcon}</summary><div class="job-menu-items"><button data-act="details">${open ? "Hide" : "Show"} details</button>${run ? '<button data-act="history">View last run</button>' : ""}<button class="delete-action" data-act="delete">Delete job…</button></div></details></div></div>
+      ${open ? `<div class="job-details">${failed ? `<div class="failure-panel"><div class="failure-copy"><div class="failure-title">${alertIcon}${escapeHtml(failure || "Job did not complete successfully")}</div><div class="meta">${run?.exitCode != null ? `Exit ${run.exitCode} · ` : ""}${when ? escapeHtml(new Date(when).toLocaleString([], {month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})) : ""}</div></div>${run ? '<button class="history-link" data-act="history">View last run</button>' : ""}</div>` : ""}${run && !failed ? '<button class="history-link" data-act="history">View last run →</button>' : ""}<pre class="mono">${escapeHtml(job.command)}</pre>${!failed ? `<div class="meta">${escapeHtml(job.cwd || "Home directory")} · via ${job.createdBy}</div>` : ""}</div>` : ""}
+    </article>`;
+  }).join("");
+  jobsView.innerHTML = `<div class="jobs-heading"><h2>Jobs <span>${state.jobs.length}</span></h2></div>${jobsError ? `<div class="jobs-error" role="alert">${escapeHtml(jobsError)}</div>` : ""}${cards || '<div class="empty">No jobs yet. Choose New to schedule your first job.</div>'}`;
+  jobsView.querySelectorAll<HTMLButtonElement>("[data-act]").forEach(button => button.addEventListener("click", async () => {
+    const card = button.closest<HTMLElement>("[data-id]")!;
+    const job = state.jobs.find(item => item.id === card.dataset.id);
+    if (!job) return;
+    const act = button.dataset.act;
+    card.querySelector("details")?.removeAttribute("open");
+    if (act === "edit") { openEditor(job); return; }
+    if (act === "details") { expandedJobs.has(job.id) ? expandedJobs.delete(job.id) : expandedJobs.add(job.id); renderJobs(); requestFit(); return; }
+    if (act === "history") {
+      historyJobFilter = "";
+      renderHistory();
+      showTab("history");
+      const run = latestRun(job);
+      historyView.querySelectorAll(".selected-run").forEach(el => el.classList.remove("selected-run"));
+      const target = [...historyView.querySelectorAll<HTMLElement>("[data-run-id]")].find(el => el.dataset.runId === run?.id);
+      target?.classList.add("selected-run"); target?.scrollIntoView({block:"nearest"}); return;
+    }
+    if (act === "run" && (pendingJobs.has(job.id) || job.lastStatus === "running" || latestRun(job)?.status === "running")) return;
+    const ok = await askConfirm({ title: act === "delete" ? "Delete job?" : act === "run" ? "Run now?" : job.enabled ? "Pause job?" : "Enable job?", message: act === "delete" ? `Delete “${job.name}”? This cannot be undone. Past runs stay in History.` : act === "run" ? `Run “${job.name}” immediately?` : `${job.enabled ? "Pause" : "Enable"} scheduled runs for “${job.name}”?`, confirmLabel: act === "delete" ? "Delete" : act === "run" ? "Run now" : job.enabled ? "Pause" : "Enable", danger: act === "delete" });
+    if (!ok) return;
+    try {
+      jobsError = "";
+      if (act === "run") { pendingJobs.add(job.id); renderJobs(); }
+      const result = act === "delete" ? await window.cadence.deleteJob(job.id) : act === "run" ? await window.cadence.runJob(job.id) : await window.cadence.updateJob(job.id, {enabled: !job.enabled});
+      if ("error" in result) throw new Error(result.error);
+      await refresh();
+    } catch (error) { jobsError = error instanceof Error ? error.message : "Could not update job. Please try again."; }
+    finally { pendingJobs.delete(job.id); renderJobs(); requestFit(); }
+  }));
 }
 
 function askConfirm(opts: {
@@ -573,16 +534,24 @@ function askConfirm(opts: {
   });
 }
 
+let historyJobFilter = "";
+
 function renderHistory(): void {
   if (!state.runs.length) {
     historyView.innerHTML = `<div class="empty">No runs yet.</div>`;
     return;
   }
-  historyView.innerHTML = state.runs
+  const jobs = new Map<string, string>();
+  state.runs.forEach(run => jobs.set(run.jobId, run.jobName));
+  state.jobs.forEach(job => jobs.set(job.id, job.name));
+  if (historyJobFilter && !jobs.has(historyJobFilter)) historyJobFilter = "";
+  const matchingRuns = state.runs.filter(run => !historyJobFilter || run.jobId === historyJobFilter);
+  const filter = `<label class="history-job-filter">Job<select id="history-job-filter"><option value="">All jobs</option>${[...jobs].sort((a,b) => a[1].localeCompare(b[1])).map(([id,name]) => `<option value="${escapeHtml(id)}" ${historyJobFilter === id ? "selected" : ""}>${escapeHtml(name)}</option>`).join("")}</select></label>`;
+  historyView.innerHTML = filter + (matchingRuns.length ? matchingRuns
     .map((run) => {
       const when = new Date(run.startedAt).toLocaleString();
       const body = [run.stdout, run.stderr].filter(Boolean).join("\n---\n");
-      return `<article class="card">
+      return `<article class="card" data-run-id="${escapeHtml(run.id)}">
         <div class="card-head">
           <h3>${escapeHtml(run.jobName)}</h3>
           <span class="badge ${run.status}">${run.status}${
@@ -593,7 +562,13 @@ function renderHistory(): void {
         ${body ? `<pre class="mono">${escapeHtml(body)}</pre>` : ""}
       </article>`;
     })
-    .join("");
+    .join("") : '<div class="empty">No runs for this job yet.</div>');
+  historyView.querySelector<HTMLSelectElement>("#history-job-filter")?.addEventListener("change", event => {
+    historyJobFilter = (event.target as HTMLSelectElement).value;
+    renderHistory();
+    historyView.querySelector<HTMLSelectElement>("#history-job-filter")?.focus();
+    requestFit();
+  });
 }
 
 function escapeHtml(s: string): string {

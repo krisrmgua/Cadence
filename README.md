@@ -30,9 +30,9 @@ The current Electron interface on macOS, using fictional jobs and sample data.
 
 <a href="docs/screenshots/jobs.png"><img src="docs/screenshots/jobs.png" alt="Scheduled jobs with passing, running, failed, and paused states." width="360" /></a>
 
-**Job Details** — Expanded job: command, schedule, enable/disable, run, and delete actions.
+**Job Details** — Job details: command, failure summary, last-run logs, and quick actions.
 
-<a href="docs/screenshots/job-details.png"><img src="docs/screenshots/job-details.png" alt="Expanded job: command, schedule, enable/disable, run, and delete actions." width="360" /></a>
+<a href="docs/screenshots/job-details.png"><img src="docs/screenshots/job-details.png" alt="Job details: command, failure summary, last-run logs, and quick actions." width="360" /></a>
 
 **Run Confirmation** — Run-now confirmation before a command is executed.
 
@@ -45,6 +45,14 @@ The current Electron interface on macOS, using fictional jobs and sample data.
 **History** — Run history with status, exit codes, stdout, and stderr.
 
 <a href="docs/screenshots/history.png"><img src="docs/screenshots/history.png" alt="Run history with status, exit codes, stdout, and stderr." width="360" /></a>
+
+**Filter History by Job** — Choose a job to see only its runs, or select All jobs to restore the full history.
+
+<a href="docs/screenshots/history-job-filter.png"><img src="docs/screenshots/history-job-filter.png" alt="History filtered to the fictional Weekly report job" width="360" /></a>
+
+**Job Actions** — Open the overflow menu for details, the latest run, and deletion.
+
+<a href="docs/screenshots/job-actions-menu.png"><img src="docs/screenshots/job-actions-menu.png" alt="Job card overflow menu" width="360" /></a>
 
 **New Job** — Job step: name, command, and optional working directory.
 
@@ -301,7 +309,7 @@ Use **Settings → Apps → Cadence → Uninstall**, or the uninstaller from the
 
 1. **Click the tray / menu-bar icon** to open the dark panel. The icon is **green** when every enabled job’s last run is fine (or has not failed); it turns **red** when any enabled job last failed or was killed.
 2. Tabs:
-   - **Jobs** — list, enable/disable, run now, delete
+   - **Jobs** — status cards, pause/resume, edit, run now, last-run logs, and overflow actions
    - **History** — recent runs with status, exit code, and captured output
    - **New** — create a job
 3. The subtitle under **Cadence** shows the live API URL and platform, e.g. `API http://127.0.0.1:3927 · darwin`.
