@@ -1,0 +1,58 @@
+[
+  {
+    "file": "jobs.png",
+    "caption": "Scheduled jobs with passing, running, failed, and paused states.",
+    "size": {
+      "width": 904,
+      "height": 600
+    }
+  },
+  {
+    "file": "job-details.png",
+    "caption": "Expanded job: command, schedule, enable/disable, run, and delete actions.",
+    "size": {
+      "width": 904,
+      "height": 828
+    }
+  },
+  {
+    "file": "run-confirmation.png",
+    "caption": "Run-now confirmation before a command is executed.",
+    "size": {
+      "width": 904,
+      "height": 828
+    }
+  },
+  {
+    "file": "delete-confirmation.png",
+    "caption": "Delete-job confirmation with the actual destructive-action wording.",
+    "size": {
+      "width": 904,
+      "height": 828
+    }
+  },
+  {
+    "file": "history.png",
+    "caption": "Run history with status, exit codes, stdout, and stderr.",
+    "size": {
+      "width": 904,
+      "height": 1084
+    }
+  },
+  {
+    "file": "new-job.png",
+    "caption": "New calendar job: command, directory, times, weekdays, and enabled state.",
+    "size": {
+      "width": 904,
+      "height": 1202
+    }
+  },
+  {
+    "file": "interval-job.png",
+    "caption": "Interval scheduling uses the same New form.",
+    "size": {
+      "width": 904,
+      "height": 1202
+    }
+  }
+]
