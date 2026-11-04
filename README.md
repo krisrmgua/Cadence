@@ -7,6 +7,16 @@ Schedule shell commands for specific days and times, run them on demand, keep st
 Cadence stays in the menu bar (Mac) or system tray (Windows). Click the icon to open the panel. It does not need a browser tab or a cloud account.
 
 
+## Menu-bar previews
+
+The actual clock badge turns green when enabled jobs have no failures, and red when an enabled job last failed.
+
+<a href="docs/screenshots/menu-bar.png"><img src="docs/screenshots/menu-bar.png" alt="The actual clock badge turns green when enabled jobs have no failures, and red when an enabled job last failed." width="540" /></a>
+
+The labeled sheets enlarge the app’s actual rendered artwork 2× for detail. The neutral backdrops are presentation surfaces, not captures of a personal desktop.
+
+[Full menu-bar gallery and regeneration instructions](docs/menu-bar.md)
+
 ## Screenshots
 
 The current Electron interface on macOS, using fictional jobs and sample data.
@@ -14,7 +24,7 @@ The current Electron interface on macOS, using fictional jobs and sample data.
 <img src="docs/screenshots/interval-job.png" alt="Guided schedule editor with interval presets" width="452" />
 
 <details>
-<summary>View all 16 screenshots</summary>
+<summary>View dashboard screenshots</summary>
 
 **Jobs** — Scheduled jobs with passing, running, failed, and paused states.
 
