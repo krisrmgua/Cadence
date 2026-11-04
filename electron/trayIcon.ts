@@ -1,5 +1,6 @@
-import { nativeImage } from "electron";
+import { app, nativeImage } from "electron";
 import { join } from "node:path";
+import { readFileSync } from "node:fs";
 import type { Job } from "./types";
 
 export type TrayHealth = "ok" | "fail";
@@ -12,7 +13,9 @@ export function trayHealthFromJobs(jobs: Job[]): TrayHealth {
 /** Generated Timeflow artwork, rasterized at 1x and 2x for an 18pt menu-bar slot. */
 export function createTrayIcon(health: TrayHealth): Electron.NativeImage {
   const name = health === "fail" ? "failure" : "healthy";
-  const artwork = nativeImage.createFromPath(join(__dirname, "../assets/tray", `timeflow-${name}.png`));
+  // electron-builder moves extraResources outside app.asar.
+  const assetRoot = app.isPackaged ? join(process.resourcesPath, "assets") : join(__dirname, "../assets");
+  const artwork = nativeImage.createFromBuffer(readFileSync(join(assetRoot, "tray", `timeflow-${name}.png`)));
   if (artwork.isEmpty()) throw new Error(`Missing Timeflow tray artwork: ${name}`);
   const icon = nativeImage.createEmpty();
   for (const scaleFactor of [1, 2]) {
