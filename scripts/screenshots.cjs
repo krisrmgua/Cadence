@@ -23,9 +23,10 @@ app.whenReady().then(async () => {
     show: false, frame: false, useContentSize: true, backgroundColor: '#0e1929',
     webPreferences: { preload: path.join(__dirname, 'screenshots/preload.cjs'),
       contextIsolation: true, nodeIntegration: false, sandbox: false, backgroundThrottling: false } });
+  let heightLimit = fixture.maxHeight || 760;
   ipcMain.on('capture:fit', (_event, width, height) => {
     win.setContentSize(Math.round(width || fixture.width),
-      Math.max(fixture.minHeight || 140, Math.min(fixture.maxHeight || 760, Math.ceil(height))));
+      Math.max(fixture.minHeight || 140, Math.min(heightLimit, Math.ceil(height))));
   });
   ipcMain.on('capture:error', (_event, message) => errors.push(message));
   win.webContents.on('console-message', (_event, level, message) => {
@@ -36,6 +37,7 @@ app.whenReady().then(async () => {
   await pause(500);
   const manifest = [];
   for (const shot of fixture.shots) {
+    if (shot.height) { heightLimit = shot.height; win.setContentSize(fixture.width, shot.height); }
     if (shot.patch) { win.webContents.send('capture:update', shot.patch); await pause(100); }
     if (shot.action) await win.webContents.executeJavaScript(shot.action);
     await pause(350);
@@ -44,6 +46,7 @@ app.whenReady().then(async () => {
       const text = await win.webContents.executeJavaScript('document.body.innerText');
       if (!text.includes(shot.expect)) throw new Error(`${shot.name}: expected ${shot.expect}`);
     }
+    if (shot.check && !await win.webContents.executeJavaScript(shot.check)) throw new Error(`${shot.name}: interaction assertion failed`);
     const png = await win.webContents.capturePage();
     if (png.isEmpty()) throw new Error(`Empty capture: ${shot.name}`);
     fs.writeFileSync(path.join(output, `${shot.name}.png`), png.toPNG());

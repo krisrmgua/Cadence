@@ -2,6 +2,7 @@ const { contextBridge, ipcRenderer } = require('electron');
 const fixture = require('./fixture.cjs');
 const state = structuredClone(fixture.state);
 let changed;
+const saved = [];
 const notify = () => { if (changed) changed(structuredClone(state)); };
 const noOp = async () => ({ ok: true });
 const api = {
@@ -26,7 +27,10 @@ const api = {
     notify(); return { ok: true };
   },
   addSymbol: noOp, removeSymbol: noOp, pull: noOp, pullFix: noOp, clean: noOp,
-  deleteRemote: noOp, createJob: noOp, updateJob: noOp, deleteJob: noOp, runJob: noOp,
+  deleteRemote: noOp,
+  createJob: async payload => { const job = { ...payload, id: 'demo-created', createdBy: 'ui' }; saved.push(structuredClone(payload)); state.jobs.unshift(job); notify(); return { job }; },
+  updateJob: async (id, payload) => { const job = state.jobs.find(job => job.id === id); Object.assign(job, payload); saved.push(structuredClone(payload)); notify(); return { job }; },
+  deleteJob: noOp, runJob: noOp,
   merge: noOp, close: noOp, copy: noOp,
   jobs: async key => structuredClone(state.pipelines.find(p => `${p.host}:${p.projectID}:${p.id}` === key)?.jobs || []),
   log: async () => fixture.log,
@@ -39,3 +43,5 @@ ipcRenderer.on('capture:update', (_event, patch) => { Object.assign(state, patch
 contextBridge.exposeInMainWorld(fixture.bridge, api);
 window.addEventListener('error', event => ipcRenderer.send('capture:error', event.message));
 window.addEventListener('unhandledrejection', event => ipcRenderer.send('capture:error', String(event.reason)));
+
+contextBridge.exposeInMainWorld("screenshotTest", { saved: () => structuredClone(saved) });

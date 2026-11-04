@@ -9,30 +9,76 @@ Cadence stays in the menu bar (Mac) or system tray (Windows). Click the icon to 
 
 ## Screenshots
 
-Screenshots of the current Electron interface on macOS, using fictional projects, accounts, jobs, and values. No personal data or live credentials are used.
+The current Electron interface on macOS, using fictional jobs and sample data.
 
-<a href="docs/screenshots/jobs.png"><img src="docs/screenshots/jobs.png" alt="Cadence main view with sample data" width="460" /></a>
-
-The gallery includes detail views, settings, and available actions. Click an image for the full-resolution capture.
+<img src="docs/screenshots/interval-job.png" alt="Guided schedule editor with interval presets" width="452" />
 
 <details>
-<summary>View all 7 screenshots</summary>
+<summary>View all 16 screenshots</summary>
 
-| Jobs | Job Details |
-| --- | --- |
-| <a href="docs/screenshots/jobs.png"><img src="docs/screenshots/jobs.png" alt="Scheduled jobs with passing, running, failed, and paused states." width="360" /></a><br>Scheduled jobs with passing, running, failed, and paused states. | <a href="docs/screenshots/job-details.png"><img src="docs/screenshots/job-details.png" alt="Expanded job: command, schedule, enable/disable, run, and delete actions." width="360" /></a><br>Expanded job: command, schedule, enable/disable, run, and delete actions. |
+**Jobs** — Scheduled jobs with passing, running, failed, and paused states.
 
-| Run Confirmation | Delete Confirmation |
-| --- | --- |
-| <a href="docs/screenshots/run-confirmation.png"><img src="docs/screenshots/run-confirmation.png" alt="Run-now confirmation before a command is executed." width="360" /></a><br>Run-now confirmation before a command is executed. | <a href="docs/screenshots/delete-confirmation.png"><img src="docs/screenshots/delete-confirmation.png" alt="Delete-job confirmation with the actual destructive-action wording." width="360" /></a><br>Delete-job confirmation with the actual destructive-action wording. |
+<a href="docs/screenshots/jobs.png"><img src="docs/screenshots/jobs.png" alt="Scheduled jobs with passing, running, failed, and paused states." width="360" /></a>
 
-| History | New Job |
-| --- | --- |
-| <a href="docs/screenshots/history.png"><img src="docs/screenshots/history.png" alt="Run history with status, exit codes, stdout, and stderr." width="360" /></a><br>Run history with status, exit codes, stdout, and stderr. | <a href="docs/screenshots/new-job.png"><img src="docs/screenshots/new-job.png" alt="New calendar job: command, directory, times, weekdays, and enabled state." width="360" /></a><br>New calendar job: command, directory, times, weekdays, and enabled state. |
+**Job Details** — Expanded job: command, schedule, enable/disable, run, and delete actions.
 
-| Interval Job |  |
-| --- | --- |
-| <a href="docs/screenshots/interval-job.png"><img src="docs/screenshots/interval-job.png" alt="Interval scheduling uses the same New form." width="360" /></a><br>Interval scheduling uses the same New form. |  |
+<a href="docs/screenshots/job-details.png"><img src="docs/screenshots/job-details.png" alt="Expanded job: command, schedule, enable/disable, run, and delete actions." width="360" /></a>
+
+**Run Confirmation** — Run-now confirmation before a command is executed.
+
+<a href="docs/screenshots/run-confirmation.png"><img src="docs/screenshots/run-confirmation.png" alt="Run-now confirmation before a command is executed." width="360" /></a>
+
+**Delete Confirmation** — Delete-job confirmation with the actual destructive-action wording.
+
+<a href="docs/screenshots/delete-confirmation.png"><img src="docs/screenshots/delete-confirmation.png" alt="Delete-job confirmation with the actual destructive-action wording." width="360" /></a>
+
+**History** — Run history with status, exit codes, stdout, and stderr.
+
+<a href="docs/screenshots/history.png"><img src="docs/screenshots/history.png" alt="Run history with status, exit codes, stdout, and stderr." width="360" /></a>
+
+**New Job** — Job step: name, command, and optional working directory.
+
+<a href="docs/screenshots/new-job.png"><img src="docs/screenshots/new-job.png" alt="Job step: name, command, and optional working directory." width="360" /></a>
+
+**Interval Job** — Schedule step: interval presets and custom minute/hour controls.
+
+<a href="docs/screenshots/interval-job.png"><img src="docs/screenshots/interval-job.png" alt="Schedule step: interval presets and custom minute/hour controls." width="360" /></a>
+
+**Custom Interval** — Custom interval supports whole minutes or hours.
+
+<a href="docs/screenshots/custom-interval.png"><img src="docs/screenshots/custom-interval.png" alt="Custom interval supports whole minutes or hours." width="360" /></a>
+
+**Invalid Interval** — Invalid intervals stay on Schedule with an actionable error.
+
+<a href="docs/screenshots/invalid-interval.png"><img src="docs/screenshots/invalid-interval.png" alt="Invalid intervals stay on Schedule with an actionable error." width="360" /></a>
+
+**Specific Times** — Specific times: day shortcuts, individual time pickers, and local time context.
+
+<a href="docs/screenshots/specific-times.png"><img src="docs/screenshots/specific-times.png" alt="Specific times: day shortcuts, individual time pickers, and local time context." width="360" /></a>
+
+**Review Job** — Review the command, directory, schedule, timezone, and enabled status before saving.
+
+<a href="docs/screenshots/review-job.png"><img src="docs/screenshots/review-job.png" alt="Review the command, directory, schedule, timezone, and enabled status before saving." width="360" /></a>
+
+**Saved Clock Job** — Saved clock-time job with the hidden interval removed.
+
+<a href="docs/screenshots/saved-clock-job.png"><img src="docs/screenshots/saved-clock-job.png" alt="Saved clock-time job with the hidden interval removed." width="360" /></a>
+
+**Edit Interval** — Editing an existing interval job opens its saved Schedule directly.
+
+<a href="docs/screenshots/edit-interval.png"><img src="docs/screenshots/edit-interval.png" alt="Editing an existing interval job opens its saved Schedule directly." width="360" /></a>
+
+**Review Interval** — Review reflects a preset change and a paused job.
+
+<a href="docs/screenshots/review-interval.png"><img src="docs/screenshots/review-interval.png" alt="Review reflects a preset change and a paused job." width="360" /></a>
+
+**Saved Interval** — Interval edit preserves job identity and submits minutes without clock-time/day restrictions.
+
+<a href="docs/screenshots/saved-interval.png"><img src="docs/screenshots/saved-interval.png" alt="Interval edit preserves job identity and submits minutes without clock-time/day restrictions." width="360" /></a>
+
+**Short Window** — Schedule remains scrollable and actions stay accessible on a shorter display.
+
+<a href="docs/screenshots/short-window.png"><img src="docs/screenshots/short-window.png" alt="Schedule remains scrollable and actions stay accessible on a shorter display." width="360" /></a>
 
 </details>
 
@@ -251,20 +297,19 @@ Use **Settings → Apps → Cadence → Uninstall**, or the uninstaller from the
 3. The subtitle under **Cadence** shows the live API URL and platform, e.g. `API http://127.0.0.1:3927 · darwin`.
 4. Click outside the panel (or lose focus) to hide it on a normal build; the app keeps running in the tray.
 
-### Create a job (UI)
+### Create or edit a job
 
-On **New**:
+The editor has three steps:
 
-| Field | Meaning |
-|---|---|
-| **Name** | Label shown in Jobs and History |
-| **Command** | Shell / cmd line to execute |
-| **Working directory** | Optional. Blank = your home folder |
-| **Times** | Comma-separated local 24h times, e.g. `09:00, 17:30` |
-| **Days** | Weekdays that should fire. If none are checked, Cadence treats that as **every day** (same as API `"days": []`) |
-| **Enabled** | When on, the scheduler will fire at matching times |
+1. **Job** — name, command, and optional working directory.
+2. **Schedule** — choose **Repeat on an interval** or **At specific times**.
+3. **Review** — check the command, directory, schedule, and enabled state, then save.
 
-**Save job** adds it to the list. Use **Run now** on Jobs to test without waiting for the clock.
+Intervals offer presets for 5, 15, or 30 minutes, every hour, or every 6 hours. **Custom** accepts a positive whole number of minutes or hours. Interval jobs run continuously every day while Cadence is running; they do not use weekday restrictions.
+
+For specific times, choose **Every day**, **Weekdays**, **Weekends**, or individual days, then add one or more clock times with **Add another time**. Times use the computer’s local timezone, shown beneath the controls. At least one day and a valid time are required. The summary updates as you make changes.
+
+Expand a job and choose **Edit** to open its saved Schedule directly. **Edit details** returns to the Job step. Changing schedule modes preserves your draft choices while editing, but only the selected mode is saved. Saving stores the schedule; **Run now** triggers a manual run. An enabled interval job may be due on the next scheduler tick.
 
 ### Enable / disable / delete
 
@@ -499,7 +544,7 @@ scripts/      install.sh, install.ps1
 
 ## Version
 
-The shipping version is `package.json` → `version` (currently **0.2.0**). The panel header shows it as `v0.2.0`. Bump that field before each release you push and package; Electron Builder embeds it into the app so `app.getVersion()` matches.
+The shipping version is `package.json` → `version` (currently **0.2.4**). The panel header shows it as `v0.2.4`. Bump that field before each release you push and package; Electron Builder embeds it into the app so `app.getVersion()` matches.
 
 ## License
 
