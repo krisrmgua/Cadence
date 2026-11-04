@@ -41,18 +41,90 @@
   },
   {
     "file": "new-job.png",
-    "caption": "New calendar job: command, directory, times, weekdays, and enabled state.",
+    "caption": "Job step: name, command, and optional working directory.",
     "size": {
       "width": 904,
-      "height": 1202
+      "height": 1010
     }
   },
   {
     "file": "interval-job.png",
-    "caption": "Interval scheduling uses the same New form.",
+    "caption": "Schedule step: interval presets and custom minute/hour controls.",
     "size": {
       "width": 904,
-      "height": 1202
+      "height": 1420
+    }
+  },
+  {
+    "file": "custom-interval.png",
+    "caption": "Custom interval supports whole minutes or hours.",
+    "size": {
+      "width": 904,
+      "height": 1420
+    }
+  },
+  {
+    "file": "invalid-interval.png",
+    "caption": "Invalid intervals stay on Schedule with an actionable error.",
+    "size": {
+      "width": 904,
+      "height": 1488
+    }
+  },
+  {
+    "file": "specific-times.png",
+    "caption": "Specific times: day shortcuts, individual time pickers, and local time context.",
+    "size": {
+      "width": 904,
+      "height": 1644
+    }
+  },
+  {
+    "file": "review-job.png",
+    "caption": "Review the command, directory, schedule, timezone, and enabled status before saving.",
+    "size": {
+      "width": 904,
+      "height": 1420
+    }
+  },
+  {
+    "file": "saved-clock-job.png",
+    "caption": "Saved clock-time job with the hidden interval removed.",
+    "size": {
+      "width": 904,
+      "height": 966
+    }
+  },
+  {
+    "file": "edit-interval.png",
+    "caption": "Editing an existing interval job opens its saved Schedule directly.",
+    "size": {
+      "width": 904,
+      "height": 1420
+    }
+  },
+  {
+    "file": "review-interval.png",
+    "caption": "Review reflects a preset change and a paused job.",
+    "size": {
+      "width": 904,
+      "height": 1420
+    }
+  },
+  {
+    "file": "saved-interval.png",
+    "caption": "Interval edit preserves job identity and submits minutes without clock-time/day restrictions.",
+    "size": {
+      "width": 904,
+      "height": 1194
+    }
+  },
+  {
+    "file": "short-window.png",
+    "caption": "Schedule remains scrollable and actions stay accessible on a shorter display.",
+    "size": {
+      "width": 904,
+      "height": 1040
     }
   }
 ]

@@ -46,7 +46,7 @@
         <div class="tabs">
           <button class="tab active" data-tab="jobs">Jobs</button>
           <button class="tab" data-tab="history">History</button>
-          <button class="tab" data-tab="new">New</button>
+          <button class="tab" data-tab="new" id="tab-new">New</button>
         </div>
       </header>
 
@@ -54,51 +54,67 @@
         <section id="view-jobs" class="view active"></section>
         <section id="view-history" class="view"></section>
         <section id="view-new" class="view">
-          <form id="job-form" class="form">
-            <label>
-              Name
-              <input id="f-name" name="name" required placeholder="Nightly backup" />
-            </label>
-            <label>
-              Command
-              <textarea
-                id="f-command"
-                name="command"
-                required
-                rows="3"
-                placeholder="echo hello"
-              ></textarea>
-            </label>
-            <label>
-              Working directory (optional)
-              <input id="f-cwd" name="cwd" placeholder="leave blank for home" />
-            </label>
-            <label>
-              Times (HH:MM, comma-separated) — leave blank if using interval
-              <input id="f-times" name="times" placeholder="09:00, 17:30" />
-            </label>
-            <label>
-              Interval minutes (optional; overrides times)
-              <input id="f-interval" name="interval" type="number" min="1" step="1" placeholder="e.g. 5" />
-            </label>
-            <fieldset class="days">
-              <legend>Days</legend>
-              <label><input type="checkbox" value="1" checked /> Mon</label>
-              <label><input type="checkbox" value="2" checked /> Tue</label>
-              <label><input type="checkbox" value="3" checked /> Wed</label>
-              <label><input type="checkbox" value="4" checked /> Thu</label>
-              <label><input type="checkbox" value="5" checked /> Fri</label>
-              <label><input type="checkbox" value="6" /> Sat</label>
-              <label><input type="checkbox" value="0" /> Sun</label>
-            </fieldset>
-            <label class="row">
-              <input type="checkbox" id="f-enabled" checked />
-              Enabled
-            </label>
-            <div class="actions">
-              <button type="submit" class="primary">Save job</button>
+          <form id="job-form" class="form wizard" novalidate>
+            <div id="job-summary" class="job-summary" hidden>
+              <div><strong id="summary-name"></strong><span id="summary-command"></span><span id="summary-cwd"></span></div>
+              <button type="button" class="ghost" id="edit-details">Edit details</button>
             </div>
-            <p class="hint" id="form-hint"></p>
+            <nav class="wizard-steps" aria-label="Job setup">
+              <button type="button" data-step="0"><span class="step-number">1</span>Job</button>
+              <span class="step-line"></span>
+              <button type="button" data-step="1"><span class="step-number">2</span>Schedule</button>
+              <span class="step-line"></span>
+              <button type="button" data-step="2"><span class="step-number">3</span>Review</button>
+            </nav>
+            <section id="step-job" aria-labelledby="job-heading">
+              <h2 id="job-heading" tabindex="-1">What should this job do?</h2>
+              <p class="wizard-sub">Give it a name and the command to run.</p>
+              <label>Name<input id="f-name" name="name" required placeholder="Nightly backup" /></label>
+              <label>Command<textarea id="f-command" name="command" required rows="3" placeholder="./scripts/backup.sh"></textarea></label>
+              <label>Working directory <span class="optional">(optional)</span><input id="f-cwd" name="cwd" placeholder="Leave blank for home" /></label>
+            </section>
+            <section id="step-schedule" aria-labelledby="schedule-heading" hidden>
+              <h2 id="schedule-heading" tabindex="-1">How often should it run?</h2>
+              <div class="schedule-choice" id="interval-choice">
+                <label class="mode-label"><input type="radio" name="schedule-mode" value="interval" checked aria-controls="interval-controls" /><span><strong>Repeat on an interval</strong><small>Keep checking throughout the day</small></span></label>
+                <div id="interval-controls" class="mode-controls">
+                  <div class="preset-grid" role="group" aria-label="Repeat interval presets">
+                    <button type="button" data-interval="5">Every 5 min</button>
+                    <button type="button" data-interval="15">Every 15 min</button>
+                    <button type="button" data-interval="30">Every 30 min</button>
+                    <button type="button" data-interval="60">Every hour</button>
+                    <button type="button" data-interval="360">Every 6 hours</button>
+                    <button type="button" data-interval="custom">Custom</button>
+                  </div>
+                  <div class="interval-row"><span>Every</span><input id="f-interval" type="number" min="1" step="1" value="1" aria-label="Repeat every" /><select id="f-interval-unit" aria-label="Interval unit"><option value="minutes">minutes</option><option value="hours" selected>hours</option></select></div>
+                  <p class="mode-note">Runs continuously, every day.</p>
+                </div>
+              </div>
+              <div class="schedule-choice" id="times-choice">
+                <label class="mode-label"><input type="radio" name="schedule-mode" value="times" aria-controls="times-controls" /><span><strong>At specific times</strong><small>Choose times and days of the week</small></span></label>
+                <div id="times-controls" class="mode-controls" hidden>
+                  <div class="day-shortcuts" role="group" aria-label="Day shortcuts"><button type="button" data-days="all">Every day</button><button type="button" data-days="weekdays">Weekdays</button><button type="button" data-days="weekends">Weekends</button></div>
+                  <fieldset class="days"><legend>Run on</legend>
+                    <label><input type="checkbox" value="1" checked /><span>Mon</span></label><label><input type="checkbox" value="2" checked /><span>Tue</span></label><label><input type="checkbox" value="3" checked /><span>Wed</span></label><label><input type="checkbox" value="4" checked /><span>Thu</span></label><label><input type="checkbox" value="5" checked /><span>Fri</span></label><label><input type="checkbox" value="6" checked /><span>Sat</span></label><label><input type="checkbox" value="0" checked /><span>Sun</span></label>
+                  </fieldset>
+                  <div class="time-list-label">Run at</div><div id="time-list"></div>
+                  <button type="button" class="add-time" id="add-time">Add another time</button>
+                  <p class="mode-note" id="timezone-note"></p>
+                </div>
+              </div>
+              <div class="schedule-preview"><span id="schedule-icon" aria-hidden="true"></span><div><strong id="schedule-blurb" aria-live="polite"></strong><p>Cadence must be running.</p></div></div>
+            </section>
+            <section id="step-review" aria-labelledby="review-heading" hidden>
+              <h2 id="review-heading" tabindex="-1">Ready to save?</h2>
+              <p class="wizard-sub">Check the job and its schedule.</p>
+              <dl class="review-details"><dt>Command</dt><dd id="review-command" class="mono"></dd><dt>Working directory</dt><dd id="review-cwd"></dd><dt>Schedule</dt><dd id="review-schedule"></dd><dt>Time zone</dt><dd id="review-timezone"></dd><dt>Status</dt><dd id="review-enabled"></dd></dl>
+              <button type="button" class="ghost" id="edit-schedule">Edit schedule</button>
+            </section>
+            <div class="wizard-footer">
+              <label class="enabled-label"><input type="checkbox" id="f-enabled" role="switch" checked /><span>Enabled</span></label>
+              <div class="actions"><button type="button" class="ghost" id="form-cancel">Cancel</button><button type="submit" class="primary" id="form-save">Continue to schedule</button></div>
+            </div>
+            <p class="hint" id="form-hint" role="alert"></p>
           </form>
         </section>
       </main>
