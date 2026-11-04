@@ -9,9 +9,9 @@ Cadence stays in the menu bar (Mac) or system tray (Windows). Click the icon to 
 
 ## Menu-bar previews
 
-The actual clock badge turns green when enabled jobs have no failures, and red when an enabled job last failed.
+The Timeflow hourglass icon turns green when enabled jobs have no failures, and red when an enabled job last failed.
 
-<a href="docs/screenshots/menu-bar.png"><img src="docs/screenshots/menu-bar.png" alt="The actual clock badge turns green when enabled jobs have no failures, and red when an enabled job last failed." width="540" /></a>
+<a href="docs/screenshots/menu-bar.png"><img src="docs/screenshots/menu-bar.png" alt="The Timeflow hourglass icon turns green when enabled jobs have no failures, and red when an enabled job last failed." width="540" /></a>
 
 The labeled sheets enlarge the app’s actual rendered artwork 2× for detail. The neutral backdrops are presentation surfaces, not captures of a personal desktop.
 

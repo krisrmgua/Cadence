@@ -113,7 +113,7 @@ module.exports = {
     ],
     "apiPort": 3927,
     "platform": "darwin",
-    "version": "0.2.6"
+    "version": "0.2.7"
   },
   "shots": [
     {

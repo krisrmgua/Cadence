@@ -7,7 +7,7 @@ module.exports = async function board(output, file, title, rows, caption) {
   const images = rows.map(row => ({ ...row, items: (Array.isArray(row.png) ? row.png : [row.png]).map(png => {
     const image = nativeImage.createFromBuffer(png);
     if (image.isEmpty()) throw new Error(`Missing menu artwork: ${row.label}`);
-    return { url: image.toDataURL(), width: image.getSize().width, height: image.getSize().height };
+    return { url: image.toDataURL(), width: row.iconSize || image.getSize().width, height: row.iconSize || image.getSize().height };
   }) }));
   const width = Math.ceil(Math.max(540, ...images.map(row => row.items.reduce((n, image) => n + image.width + 12, 0) + 80)));
   const rowHeight = Math.max(96,...images.map(row => Math.max(...row.items.map(image => image.height)) + 50));
