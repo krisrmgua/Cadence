@@ -21,7 +21,12 @@ The labeled sheets enlarge the app’s actual rendered artwork 2× for detail. T
 
 The current Electron interface on macOS, using fictional jobs and sample data.
 
-<img src="docs/screenshots/interval-job.png" alt="Guided schedule editor with interval presets" width="452" />
+### Jobs and History
+
+The Jobs cards show schedules, last runs, status, and quick actions. The History timeline groups executions by day, with job and status filters and inline failure logs.
+
+<a href="docs/screenshots/jobs.png"><img src="docs/screenshots/jobs.png" alt="Current Jobs cards with status, schedule, pause, edit, and run actions" width="420" /></a>
+<a href="docs/screenshots/history.png"><img src="docs/screenshots/history.png" alt="Current History timeline with All, Passed, Failed, Running, and job filters" width="420" /></a>
 
 <details>
 <summary>View dashboard screenshots</summary>
@@ -45,6 +50,11 @@ The current Electron interface on macOS, using fictional jobs and sample data.
 **History** — A chronological timeline with All, Passed, Failed, and Running filters, grouped by day. Failure summaries show exit codes and logs.
 
 <a href="docs/screenshots/history.png"><img src="docs/screenshots/history.png" alt="History timeline with status filters and failure logs" width="360" /></a>
+
+**History Status Filters** — Focus on failed, passed, or currently running executions.
+
+<a href="docs/screenshots/history-failed.png"><img src="docs/screenshots/history-failed.png" alt="History filtered to failed runs, showing the error summary and logs" width="360" /></a>
+<a href="docs/screenshots/history-running.png"><img src="docs/screenshots/history-running.png" alt="History filtered to running executions" width="360" /></a>
 
 **Filter History by Job** — Choose a job to see only its runs, or select All jobs to restore the full history.
 
