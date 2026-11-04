@@ -42,9 +42,9 @@ The current Electron interface on macOS, using fictional jobs and sample data.
 
 <a href="docs/screenshots/delete-confirmation.png"><img src="docs/screenshots/delete-confirmation.png" alt="Delete-job confirmation with the actual destructive-action wording." width="360" /></a>
 
-**History** — Run history with status, exit codes, stdout, and stderr.
+**History** — A chronological timeline with All, Passed, Failed, and Running filters, grouped by day. Failure summaries show exit codes and logs.
 
-<a href="docs/screenshots/history.png"><img src="docs/screenshots/history.png" alt="Run history with status, exit codes, stdout, and stderr." width="360" /></a>
+<a href="docs/screenshots/history.png"><img src="docs/screenshots/history.png" alt="History timeline with status filters and failure logs" width="360" /></a>
 
 **Filter History by Job** — Choose a job to see only its runs, or select All jobs to restore the full history.
 

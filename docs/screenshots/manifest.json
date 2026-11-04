@@ -44,7 +44,7 @@
     "caption": "Run history with status, exit codes, stdout, and stderr.",
     "size": {
       "width": 904,
-      "height": 1180
+      "height": 1700
     }
   },
   {
@@ -52,7 +52,7 @@
     "caption": "History filtered to one job.",
     "size": {
       "width": 904,
-      "height": 618
+      "height": 896
     }
   },
   {
@@ -60,7 +60,47 @@
     "caption": "All jobs restores the complete history.",
     "size": {
       "width": 904,
-      "height": 1180
+      "height": 1700
+    }
+  },
+  {
+    "file": "history-failed.png",
+    "caption": "Timeline filtered to failed executions.",
+    "size": {
+      "width": 904,
+      "height": 896
+    }
+  },
+  {
+    "file": "history-passed.png",
+    "caption": "Timeline filtered to passed executions.",
+    "size": {
+      "width": 904,
+      "height": 1014
+    }
+  },
+  {
+    "file": "history-running.png",
+    "caption": "Timeline filtered to running executions.",
+    "size": {
+      "width": 904,
+      "height": 680
+    }
+  },
+  {
+    "file": "history-combined-filter.png",
+    "caption": "Job and status filters work together.",
+    "size": {
+      "width": 904,
+      "height": 500
+    }
+  },
+  {
+    "file": "history-restored.png",
+    "caption": "Restore all statuses and jobs.",
+    "size": {
+      "width": 904,
+      "height": 1700
     }
   },
   {

@@ -72,3 +72,11 @@ final result: passed
 ## History job filter follow-up
 
 Added only the job dropdown to the existing History layout, per the narrowed request. Options use job IDs and include historical/deleted jobs. Selection persists across data refresh; All jobs restores the full list. View last run clears filters so its target remains reachable. Production build, TypeScript, fixture syntax validation, and 26 renderer scenarios passed, including single-job and all-job assertions. Inspected `docs/screenshots/history-job-filter.png`. The earlier screenshot-fixture quoting mistake is corrected; fixture-load errors now exit the capture process with stderr rather than an uncaught Electron dialog. Updated the installed app while preserving user data.
+
+# History timeline correction — 0.2.6
+
+final result: passed
+
+The user's reattached timeline image is the source of truth (`designs/history/reference.png`). The earlier ledger interpretation was discarded. `designs/history/comparison.png` compares the source and production capture at a normalized 904px width. Timeline lines and status nodes, grouped dates, green/red/amber states, failure summary and full output, and all four status filters match that structure. The requested job dropdown adds a row. Native system typography is retained and text wraps at the real 452pt panel width rather than shrinking to fit the illustration. No running duration is invented; completed durations derive from recorded timestamps.
+
+Build and TypeScript checks passed. All 31 isolated production-renderer scenarios passed, including each status filter, combined job/status empty state, restoring All, previous-day grouping in the capture, and job-to-history navigation. README screenshots refreshed with fictional data. Packaged 0.2.6, locally signed and signature-verified before installation; user jobs/history remain in the separate data directory.

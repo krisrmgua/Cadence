@@ -113,7 +113,7 @@ module.exports = {
     ],
     "apiPort": 3927,
     "platform": "darwin",
-    "version": "0.2.5"
+    "version": "0.2.6"
   },
   "shots": [
     {
@@ -147,7 +147,12 @@ module.exports = {
       "expect": "Backup complete."
     },
     {name:'history-job-filter',caption:'History filtered to one job.',action:'document.querySelector("#history-job-filter").value="2";document.querySelector("#history-job-filter").dispatchEvent(new Event("change",{bubbles:true}));',check:'document.querySelectorAll("[data-run-id]").length===1 && document.querySelector("[data-run-id]").dataset.runId==="1"'},
-    {name:'history-all-jobs',caption:'All jobs restores the complete history.',action:'document.querySelector("#history-job-filter").value="";document.querySelector("#history-job-filter").dispatchEvent(new Event("change",{bubbles:true}));',check:'document.querySelectorAll("[data-run-id]").length===3'},
+    {name:'history-all-jobs',caption:'All jobs restores the complete history.',action:'document.querySelector("#history-job-filter").value="";document.querySelector("#history-job-filter").dispatchEvent(new Event("change",{bubbles:true}));',check:'document.querySelectorAll("[data-run-id]").length===4'},
+    {name:'history-failed',caption:'Timeline filtered to failed executions.',action:'document.querySelector("[data-history-status=fail]").click();',check:'document.querySelectorAll(".history-run").length===1 && document.querySelector(".history-run").classList.contains("fail")'},
+    {name:'history-passed',caption:'Timeline filtered to passed executions.',action:'document.querySelector("[data-history-status=ok]").click();',check:'document.querySelectorAll(".history-run").length===2 && document.querySelector(".history-run").classList.contains("ok")'},
+    {name:'history-running',caption:'Timeline filtered to running executions.',action:'document.querySelector("[data-history-status=running]").click();',check:'document.querySelectorAll(".history-run").length===1 && document.querySelector(".history-run").classList.contains("running")'},
+    {name:'history-combined-filter',caption:'Job and status filters work together.',action:'document.querySelector("#history-job-filter").value="2";document.querySelector("#history-job-filter").dispatchEvent(new Event("change",{bubbles:true}));',expect:'No runs match these filters.',check:'document.querySelectorAll(".history-run").length===0'},
+    {name:'history-restored',caption:'Restore all statuses and jobs.',action:'document.querySelector("[data-history-status=all]").click();document.querySelector("#history-job-filter").value="";document.querySelector("#history-job-filter").dispatchEvent(new Event("change",{bubbles:true}));',check:'document.querySelectorAll(".history-run").length===4'},
     {
       "name": "new-job",
       "caption": "Job step: name, command, and optional working directory.",
@@ -238,3 +243,5 @@ module.exports = {
 
   ]
 };
+
+module.exports.state.runs.push({id:'yesterday-demo',jobId:'0',jobName:'Nightly backup',startedAt:'2026-11-03T15:49:31Z',finishedAt:'2026-11-03T15:50:31Z',exitCode:0,status:'ok',stdout:'Archived 12 demo projects. Verified archive checksum. Backup complete.',stderr:'',triggeredBy:'schedule'});
