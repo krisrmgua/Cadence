@@ -75,6 +75,15 @@ export class Store {
     this.persist();
   }
 
+  getDarkTrayBackground(): boolean {
+    return this.data.darkTrayBackground === true;
+  }
+
+  setDarkTrayBackground(enabled: boolean): void {
+    this.data.darkTrayBackground = enabled;
+    this.persist();
+  }
+
   listJobs(): Job[] {
     return structuredClone(this.data.jobs);
   }

@@ -73,7 +73,7 @@ const expandedJobs = new Set<string>();
 
 const jobsView = document.getElementById("view-jobs")!;
 const historyView = document.getElementById("view-history")!;
-const apiLine = document.getElementById("api-line")!;
+const appVersion = document.getElementById("app-version")!;
 const form = document.getElementById("job-form") as HTMLFormElement;
 const formHint = document.getElementById("form-hint")!;
 const formSave = document.getElementById("form-save") as HTMLButtonElement;
@@ -98,9 +98,15 @@ document.querySelectorAll<HTMLButtonElement>(".tab").forEach((btn) => {
 
 function requestFit(): void {
   requestAnimationFrame(() => {
-    const app = document.getElementById("app");
-    if (!app) return;
-    const height = Math.ceil(document.querySelector("header")!.getBoundingClientRect().height + document.querySelector("main")!.scrollHeight);
+    const header = document.querySelector("header");
+    const main = document.querySelector("main");
+    const foot = document.querySelector("footer");
+    if (!header || !main || !foot) return;
+    const height = Math.ceil(
+      header.getBoundingClientRect().height +
+        main.scrollHeight +
+        foot.getBoundingClientRect().height,
+    );
     void window.cadence.fitHeight(height);
   });
 }
@@ -613,7 +619,7 @@ function escapeHtml(s: string): string {
 
 async function refresh(): Promise<void> {
   state = await window.cadence.getState();
-  apiLine.textContent = `v${state.version} · API https://127.0.0.1:${state.apiPort} · ${state.platform}`;
+  appVersion.textContent = `v${state.version} · API https://127.0.0.1:${state.apiPort}`;
   renderJobs();
   renderHistory();
   requestFit();
