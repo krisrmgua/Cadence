@@ -127,8 +127,8 @@ export class LocalApi {
 
       json(res, 404, { error: "not found" });
     } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
-      json(res, 500, { error: message });
+      console.error("Cadence API request failed", err);
+      if (!res.headersSent) json(res, 500, { error: "internal error" });
     }
   }
 }
