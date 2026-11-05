@@ -27,6 +27,7 @@ let scheduler: Scheduler;
 let api: LocalApi;
 let apiPort = 3927;
 let trayHealth: TrayHealth = "ok";
+let trayDarkBg = false;
 
 const isDev = process.env.CADENCE_DEV === "1";
 
@@ -137,12 +138,14 @@ function broadcast(): void {
   panel?.webContents.send("cadence:changed");
 }
 
-function refreshTray(): void {
+function refreshTray(force = false): void {
   if (!tray || !store) return;
   const next = trayHealthFromJobs(store.listJobs());
-  if (next !== trayHealth) {
+  const dark = store.getDarkTrayBackground();
+  if (force || next !== trayHealth || dark !== trayDarkBg) {
     trayHealth = next;
-    tray.setImage(createTrayIcon(trayHealth));
+    trayDarkBg = dark;
+    tray.setImage(createTrayIcon(trayHealth, trayDarkBg));
   }
   const status = trayHealth === "fail" ? "failures" : "ok";
   tray.setToolTip(`Cadence · ${status} · API :${apiPort}`);
@@ -210,9 +213,10 @@ async function boot(): Promise<void> {
   apiPort = await api.start(store.getApiPort());
   scheduler.start();
 
+  trayDarkBg = store.getDarkTrayBackground();
   trayHealth = trayHealthFromJobs(store.listJobs());
-  tray = new Tray(createTrayIcon(trayHealth));
-  refreshTray();
+  tray = new Tray(createTrayIcon(trayHealth, trayDarkBg));
+  refreshTray(true);
   tray.on("click", () => togglePanel());
   tray.on("right-click", () => {
     const menu = Menu.buildFromTemplate([
@@ -225,6 +229,16 @@ async function boot(): Promise<void> {
         enabled: false,
       },
       { label: `API https://127.0.0.1:${apiPort}`, enabled: false },
+      { type: "separator" },
+      {
+        label: "Dark tray background",
+        type: "checkbox",
+        checked: store.getDarkTrayBackground(),
+        click: (item) => {
+          store.setDarkTrayBackground(item.checked);
+          refreshTray(true);
+        },
+      },
       { type: "separator" },
       { label: "Quit", click: () => app.quit() },
     ]);

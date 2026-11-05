@@ -39,7 +39,7 @@ body {
 .top {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   gap: 12px;
   padding: 16px 16px 10px;
   border-bottom: 1px solid var(--border);
@@ -60,10 +60,16 @@ body {
   color: #fff;
 }
 
-.sub {
-  margin-top: 2px;
+.foot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 16px 14px;
+}
+
+.foot .ver {
   color: var(--muted);
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .tabs {

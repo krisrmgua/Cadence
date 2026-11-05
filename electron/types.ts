@@ -46,6 +46,8 @@ export interface JobRun {
 export interface CadenceStoreData {
   version: 1;
   apiPort: number;
+  /** Paint a dark rounded backdrop behind the menu-bar icon. */
+  darkTrayBackground?: boolean;
   jobs: Job[];
   runs: JobRun[];
 }
