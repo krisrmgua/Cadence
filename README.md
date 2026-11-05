@@ -201,7 +201,7 @@ source ~/.zprofile
 cadence status
 # → running
 
-curl -s http://127.0.0.1:3927/health
+curl -sk https://127.0.0.1:3927/health
 # → {"ok":true,"service":"cadence",...}
 ```
 
@@ -286,7 +286,7 @@ In the wizard: pick an install folder (or accept the default), finish, then star
 - Health check from PowerShell:
 
 ```powershell
-Invoke-RestMethod http://127.0.0.1:3927/health
+Invoke-RestMethod -SkipCertificateCheck https://127.0.0.1:3927/health
 ```
 
 ### SmartScreen
@@ -322,7 +322,7 @@ Use **Settings → Apps → Cadence → Uninstall**, or the uninstaller from the
    - **Jobs** — status cards, pause/resume, edit, run now, last-run logs, and overflow actions
    - **History** — recent runs with status, exit code, and captured output
    - **New** — create a job
-3. The subtitle under **Cadence** shows the live API URL and platform, e.g. `API http://127.0.0.1:3927 · darwin`.
+3. The subtitle under **Cadence** shows the live API URL and platform, e.g. `API https://127.0.0.1:3927 · darwin`.
 4. Click outside the panel (or lose focus) to hide it on a normal build; the app keeps running in the tray.
 
 ### Create or edit a job
@@ -384,6 +384,8 @@ While Cadence is running it listens on **127.0.0.1 only** (not reachable from ot
 - If 3927 is busy it tries 3928, 3929, then an ephemeral port, and remembers the chosen port
 - Current port is in the panel subtitle and on the tray tooltip
 
+The API is HTTPS on `127.0.0.1` only. The first launch creates a self-signed certificate, so `curl` needs `--insecure` (`-k`).
+
 All responses are JSON. Errors look like `{ "error": "..." }` with HTTP 4xx/5xx.
 
 ### Endpoints
@@ -403,7 +405,7 @@ All responses are JSON. Errors look like `{ "error": "..." }` with HTTP 4xx/5xx.
 ### Health
 
 ```bash
-curl -s http://127.0.0.1:3927/health
+curl -sk https://127.0.0.1:3927/health
 ```
 
 ```json
@@ -418,13 +420,13 @@ curl -s http://127.0.0.1:3927/health
 PowerShell:
 
 ```powershell
-Invoke-RestMethod http://127.0.0.1:3927/health
+Invoke-RestMethod -SkipCertificateCheck https://127.0.0.1:3927/health
 ```
 
 ### Create a job
 
 ```bash
-curl -s http://127.0.0.1:3927/jobs \
+curl -sk https://127.0.0.1:3927/jobs \
   -H 'content-type: application/json' \
   -d '{
     "name": "Morning ping",
@@ -454,29 +456,29 @@ curl -s http://127.0.0.1:3927/jobs \
 
 ```bash
 # list
-curl -s http://127.0.0.1:3927/jobs
+curl -sk https://127.0.0.1:3927/jobs
 
 # get one
-curl -s http://127.0.0.1:3927/jobs/<id>
+curl -sk https://127.0.0.1:3927/jobs/<id>
 
 # pause
-curl -s -X PATCH http://127.0.0.1:3927/jobs/<id> \
+curl -sk -X PATCH https://127.0.0.1:3927/jobs/<id> \
   -H 'content-type: application/json' \
   -d '{"enabled": false}'
 
 # change schedule
-curl -s -X PATCH http://127.0.0.1:3927/jobs/<id> \
+curl -sk -X PATCH https://127.0.0.1:3927/jobs/<id> \
   -H 'content-type: application/json' \
   -d '{"schedule":{"times":["12:00"],"days":[1,3,5]}}'
 
 # delete
-curl -s -X DELETE http://127.0.0.1:3927/jobs/<id>
+curl -sk -X DELETE https://127.0.0.1:3927/jobs/<id>
 ```
 
 ### Run now
 
 ```bash
-curl -s -X POST http://127.0.0.1:3927/jobs/<id>/run
+curl -sk -X POST https://127.0.0.1:3927/jobs/<id>/run
 ```
 
 The HTTP call **blocks until the command finishes**, then returns the run object (`status`, `exitCode`, `stdout`, `stderr`, timestamps).
@@ -484,8 +486,8 @@ The HTTP call **blocks until the command finishes**, then returns the run object
 ### History
 
 ```bash
-curl -s 'http://127.0.0.1:3927/runs?limit=20'
-curl -s http://127.0.0.1:3927/runs/<run-id>
+curl -sk 'https://127.0.0.1:3927/runs?limit=20'
+curl -sk https://127.0.0.1:3927/runs/<run-id>
 ```
 
 Cadence keeps roughly the newest **200** runs on disk; older ones are dropped.

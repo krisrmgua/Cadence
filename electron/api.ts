@@ -1,5 +1,9 @@
-import http from "node:http";
+import { execFileSync } from "node:child_process";
+import fs from "node:fs";
+import https from "node:https";
 import type { IncomingMessage, ServerResponse } from "node:http";
+import path from "node:path";
+import { storePath } from "./paths";
 import type { Store } from "./store";
 import type { Runner } from "./runner";
 import type { CreateJobInput, UpdateJobInput, Weekday } from "./types";
@@ -7,7 +11,7 @@ import type { CreateJobInput, UpdateJobInput, Weekday } from "./types";
 type Json = Record<string, unknown> | unknown[] | string | number | boolean | null;
 
 export class LocalApi {
-  private server: http.Server | null = null;
+  private server: https.Server | null = null;
   private port = 0;
 
   constructor(
@@ -40,9 +44,41 @@ export class LocalApi {
     this.server = null;
   }
 
+  /** Loopback TLS certificate created on first launch. The private key stays in the data directory. */
+  private certificate(): { key: Buffer; cert: Buffer } {
+    const dir = path.dirname(storePath());
+    const keyPath = path.join(dir, "api-key.pem");
+    const certPath = path.join(dir, "api-cert.pem");
+    if (!fs.existsSync(keyPath) || !fs.existsSync(certPath)) {
+      execFileSync(
+        "openssl",
+        [
+          "req",
+          "-x509",
+          "-newkey",
+          "rsa:2048",
+          "-keyout",
+          keyPath,
+          "-out",
+          certPath,
+          "-days",
+          "825",
+          "-nodes",
+          "-subj",
+          "/CN=127.0.0.1",
+          "-addext",
+          "subjectAltName=IP:127.0.0.1",
+        ],
+        { stdio: "ignore" },
+      );
+      fs.chmodSync(keyPath, 0o600);
+    }
+    return { key: fs.readFileSync(keyPath), cert: fs.readFileSync(certPath) };
+  }
+
   private listen(port: number): Promise<number> {
     return new Promise((resolve, reject) => {
-      const server = http.createServer((req, res) => {
+      const server = https.createServer(this.certificate(), (req, res) => {
         void this.handle(req, res);
       });
       server.once("error", reject);
@@ -57,7 +93,7 @@ export class LocalApi {
 
   private async handle(req: IncomingMessage, res: ServerResponse): Promise<void> {
     try {
-      const url = new URL(req.url || "/", "http://127.0.0.1");
+      const url = new URL(req.url || "/", "https://127.0.0.1");
       const method = (req.method || "GET").toUpperCase();
       const path = url.pathname.replace(/\/+$/, "") || "/";
 
