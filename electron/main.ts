@@ -134,18 +134,18 @@ function togglePanel(): void {
 }
 
 function broadcast(): void {
-  refreshTray();
+  void refreshTray();
   panel?.webContents.send("cadence:changed");
 }
 
-function refreshTray(force = false): void {
+async function refreshTray(force = false): Promise<void> {
   if (!tray || !store) return;
   const next = trayHealthFromJobs(store.listJobs());
   const dark = store.getDarkTrayBackground();
   if (force || next !== trayHealth || dark !== trayDarkBg) {
     trayHealth = next;
     trayDarkBg = dark;
-    tray.setImage(createTrayIcon(trayHealth, trayDarkBg));
+    tray.setImage(await createTrayIcon(trayHealth, trayDarkBg));
   }
   const status = trayHealth === "fail" ? "failures" : "ok";
   tray.setToolTip(`Cadence · ${status} · API :${apiPort}`);
@@ -215,8 +215,8 @@ async function boot(): Promise<void> {
 
   trayDarkBg = store.getDarkTrayBackground();
   trayHealth = trayHealthFromJobs(store.listJobs());
-  tray = new Tray(createTrayIcon(trayHealth, trayDarkBg));
-  refreshTray(true);
+  tray = new Tray(await createTrayIcon(trayHealth, trayDarkBg));
+  await refreshTray(true);
   tray.on("click", () => togglePanel());
   tray.on("right-click", () => {
     const menu = Menu.buildFromTemplate([
@@ -236,7 +236,7 @@ async function boot(): Promise<void> {
         checked: store.getDarkTrayBackground(),
         click: (item) => {
           store.setDarkTrayBackground(item.checked);
-          refreshTray(true);
+          void refreshTray(true);
         },
       },
       { type: "separator" },
