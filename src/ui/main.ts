@@ -460,7 +460,16 @@ function renderJobs(): void {
       ${open ? `<div class="job-details">${failed ? `<div class="failure-panel"><div class="failure-copy"><div class="failure-title">${alertIcon}${escapeHtml(failure || "Job did not complete successfully")}</div><div class="meta">${run?.exitCode != null ? `Exit ${run.exitCode} · ` : ""}${when ? escapeHtml(new Date(when).toLocaleString([], {month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})) : ""}</div></div>${run ? '<button class="history-link" data-act="history">View last run</button>' : ""}</div>` : ""}${run && !failed ? '<button class="history-link" data-act="history">View last run →</button>' : ""}<pre class="mono">${escapeHtml(job.command)}</pre>${!failed ? `<div class="meta">${escapeHtml(job.cwd || "Home directory")} · via ${job.createdBy}</div>` : ""}</div>` : ""}
     </article>`;
   }).join("");
-  jobsView.innerHTML = `<div class="jobs-heading"><h2>Jobs <span>${state.jobs.length}</span></h2></div>${jobsError ? `<div class="jobs-error" role="alert">${escapeHtml(jobsError)}</div>` : ""}${cards || '<div class="empty">No jobs yet. Choose New to schedule your first job.</div>'}`;
+  jobsView.innerHTML = `<div class="jobs-heading"><h2>Jobs <span>${state.jobs.length}</span></h2></div>${cards || '<div class="empty">No jobs yet. Choose New to schedule your first job.</div>'}`;
+  if (jobsError) {
+    const banner = document.createElement("div");
+    banner.className = "jobs-error";
+    banner.setAttribute("role", "alert");
+    banner.textContent = jobsError;
+    const heading = jobsView.querySelector(".jobs-heading");
+    if (heading) heading.insertAdjacentElement("afterend", banner);
+    else jobsView.prepend(banner);
+  }
   jobsView.querySelectorAll<HTMLButtonElement>("[data-act]").forEach(button => button.addEventListener("click", async () => {
     const card = button.closest<HTMLElement>("[data-id]")!;
     const job = state.jobs.find(item => item.id === card.dataset.id);
@@ -604,7 +613,7 @@ function escapeHtml(s: string): string {
 
 async function refresh(): Promise<void> {
   state = await window.cadence.getState();
-  apiLine.textContent = `v${state.version} · API http://127.0.0.1:${state.apiPort} · ${state.platform}`;
+  apiLine.textContent = `v${state.version} · API https://127.0.0.1:${state.apiPort} · ${state.platform}`;
   renderJobs();
   renderHistory();
   requestFit();

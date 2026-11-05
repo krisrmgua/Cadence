@@ -14,7 +14,7 @@ npm run build
 Optional: run the app locally with `npm run dev` or `npm start`, and hit the API:
 
 ```bash
-curl -s http://127.0.0.1:3927/health
+curl -sk https://127.0.0.1:3927/health
 ```
 
 4. Do not commit secrets, machine-local `cadence.json` data, API tokens, or `release/` / `dist/` build products.
