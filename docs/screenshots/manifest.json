@@ -1,7 +1,7 @@
 [
   {
     "file": "menu-bar.png",
-    "caption": "Actual Cadence Timeflow menu-bar hourglass icons: green for healthy jobs and red for an enabled job failure.",
+    "caption": "Actual Cadence Timeflow menu-bar hourglass icons: white rails, with a green center when healthy and a red center when an enabled job last failed.",
     "size": {
       "width": 1080,
       "height": 920

@@ -19,5 +19,5 @@ module.exports = async (_root,output) => {
     {label:'Attention · an enabled job last failed',iconSize:18,png:fail.toPNG({scaleFactor:2})},
     {label:'Healthy · on a light menu bar',background:'#eff2f5',iconSize:18,png:ok.toPNG({scaleFactor:2})},
     {label:'Attention · on a light menu bar',background:'#eff2f5',iconSize:18,png:fail.toPNG({scaleFactor:2})},
-  ],'Actual Cadence Timeflow menu-bar hourglass icons: green for healthy jobs and red for an enabled job failure.');
+  ],'Actual Cadence Timeflow menu-bar hourglass icons: white rails, with a green center when healthy and a red center when an enabled job last failed.');
 };

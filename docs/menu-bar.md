@@ -14,6 +14,6 @@ Run on macOS for the same renderer/font environment. `scripts/screenshots/menu.c
 
 ## Menu Bar
 
-Actual Cadence menu-bar clock icons: green for healthy jobs and red for an enabled job failure.
+Actual Cadence menu-bar hourglass icons: white rails, with a green center when healthy and a red center when an enabled job last failed.
 
-![Actual Cadence menu-bar clock icons: green for healthy jobs and red for an enabled job failure.](screenshots/menu-bar.png)
+![Actual Cadence menu-bar hourglass icons: white rails, with a green center when healthy and a red center when an enabled job last failed.](screenshots/menu-bar.png)
