@@ -20,9 +20,15 @@ if [[ -z "${APP_SRC}" ]]; then
   exit 1
 fi
 
+# Quit the running copy so the bundle can be replaced and relaunched fresh.
+pkill -f "Cadence.app/Contents/MacOS/Cadence" 2>/dev/null || true
+sleep 1
+
 mkdir -p "$HOME/Applications"
 rm -rf "$HOME/Applications/Cadence.app"
 cp -R "$APP_SRC" "$HOME/Applications/Cadence.app"
+xattr -dr com.apple.quarantine "$HOME/Applications/Cadence.app" 2>/dev/null || true
+codesign --force --deep --sign - --identifier com.kris.cadence "$HOME/Applications/Cadence.app" >/dev/null 2>&1 || true
 
 mkdir -p "$HOME/bin"
 cat >"$HOME/bin/cadence" <<'EOF'
