@@ -7,7 +7,9 @@ import type { Job } from "./types";
 export type TrayHealth = "ok" | "fail";
 
 /** Match Tickr / Pipeline Tracer menu-bar capsule fill. */
-const DARK_FILL = "rgba(14, 23, 36, 0.92)";
+const DARK_FILL_OK = "rgba(14, 23, 36, 0.92)";
+/** Near-black red when an enabled job last failed. */
+const DARK_FILL_FAIL = "rgba(48, 10, 16, 0.94)";
 const ICON_PT = 18;
 const DARK_PT = 22;
 
@@ -71,7 +73,7 @@ async function darkTrayIcon(health: TrayHealth): Promise<Electron.NativeImage> {
     ctx.imageSmoothingQuality = "high";
 
     roundRect(ctx, 0, 0, size, size, size * 0.28);
-    ctx.fillStyle = DARK_FILL;
+    ctx.fillStyle = health === "fail" ? DARK_FILL_FAIL : DARK_FILL_OK;
     ctx.fill();
 
     const pad = Math.round(2.5 * scaleFactor);
